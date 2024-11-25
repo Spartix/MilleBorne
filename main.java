@@ -1,5 +1,6 @@
 class main extends Program {
-    final char[] voitures_dispo = new char[]{'🚗','🚙','🚕','🚐','🚓'};
+    // les voitures en String car en Char ils n existent pas
+    final String[] voitures_dispo = new String[]{"🚗","🚙","🚕","🚐","🚓"};
     // taille de la pioche au début du jeu;
     final int taille_pioche = 100;
     // noms des cartes , leur associations en valeur et leur associations en nombre;
@@ -8,9 +9,12 @@ class main extends Program {
     final int[] cards_nb = new int[]{90,10};
     void algorithm() {
         // players P = new players();
+        //println("🚗");
+        Players p = newPlayers(1,"TEST","🚗");
+        println(generateRoute(p));
     }
     void start(){
-        int nbJoueurs = saisir("Entrez un nombre de joueurs :",2,5);
+        int nbJoueurs = saisir("Entrez un nome de joueurs :",2,5);
         Plateau plateau = newPlateau(100,nbJoueurs);
         initJoueurs(plateau);
     }
@@ -23,7 +27,7 @@ class main extends Program {
         }
         return paquet;
     }
-    Cards[] newCards(String name, int value , int nombres){
+    Cards newCards(String name, int value , int nombres){
         Cards carte = new Cards();
         carte.name = name;
         carte.value = value;
@@ -43,7 +47,6 @@ class main extends Program {
 
     String getVoiture(){
         /* function qui retourne la liste des voiture en string;*/
-
         String msg = "";
         for (int i = 0; i < length(voitures_dispo); i++) {
             msg = msg + voitures_dispo[i] + " ";
@@ -51,7 +54,7 @@ class main extends Program {
         return msg;
     }
     void testGetVoiture(){
-        assertEquals("🚗 🚙 🚕 🚐 🚓" , getVoiture());
+        assertEquals("🚗 🚙 🚕 🚐 🚓 " , getVoiture());
     }
 
     Plateau newPlateau(int nbCartes ,int  nbJoueurs){
@@ -63,7 +66,7 @@ class main extends Program {
     }
 
 
-    Players newPlayers(int numero , String pseudo , char voiture ){
+    Players newPlayers(int numero , String pseudo , String voiture ){
         /* Fonction de construction du joueur */
         Players joueur = new Players();
         joueur.numero = numero;
@@ -71,8 +74,6 @@ class main extends Program {
         joueur.voiture = voiture;
         return joueur;
     }
-
-
     int saisir(String message ,int min , int max){
         /*
         fonction de controle de saisie;
@@ -88,5 +89,27 @@ class main extends Program {
                 saisie = readInt();
             }
             return saisie;
+    }
+    String generateRoute( Players joueur){
+        String msg = " ";
+        int position = joueur.position_Plateau;
+        for (int i = 0; i < 98; i++) {
+            msg = msg + "_";
+        }
+        msg = msg + "\n";
+        for (int i = 0; i < position; i++) {
+            msg = msg + " ";
+        }
+        msg = msg + joueur.voiture;
+        // |____________________________________________________________________________________________________|
+        for (int i = 0; i < (100 - position); i++) {
+            msg = msg + " ";
+        }
+        msg = msg + "|\n ";
+        for (int i = 0; i < 98; i++) {
+            msg = msg + "_";
+        };
+        msg = msg + "|";
+        return msg;
     }
 }
