@@ -11,6 +11,7 @@ class main extends Program {
         // players P = new players();
         //println("🚗");
         Players p = newPlayers(1,"TEST","🚗");
+        p.position_Plateau = 100;
         println(generateRoute(p));
     }
     void start(){
@@ -19,19 +20,18 @@ class main extends Program {
         initJoueurs(plateau);
     }
 
-    Cards[] initPaquet(int total, String name[] , int[] value , int[] nb){
+    Cards[] initPaquet(int total, String name[] , int[] value){
         // fonction pour initialiser une pioche 
         Cards[] paquet  = new Cards[total];
         for (int i = 0; i < total; i++) {
-            paquet[i] = newCards(cards_name[i],cards_value[i],cards_nb[i]);
+            paquet[i] = newCards(cards_name[i],cards_value[i]);
         }
         return paquet;
     }
-    Cards newCards(String name, int value , int nombres){
+    Cards newCards(String name, int value){
         Cards carte = new Cards();
         carte.name = name;
         carte.value = value;
-        carte.nombres = nombres;
         return carte;
     }
     void initJoueurs(Plateau plat){
@@ -93,20 +93,25 @@ class main extends Program {
     String generateRoute( Players joueur){
         String msg = " ";
         int position = joueur.position_Plateau;
-        for (int i = 0; i < 98; i++) {
+        // les tiret en haut
+        for (int i = 0; i < 100; i++) {
             msg = msg + "_";
         }
-        msg = msg + "\n";
-        for (int i = 0; i < position; i++) {
+        msg = msg + " \n|" ;
+        // la ligne de la voiture
+        for (int i = 0; i < 100; i++) {
+            msg = msg + " ";
+        }
+        msg += "|\n|";
+        for (int i = 0; i < 100 - position; i++) {
             msg = msg + " ";
         }
         msg = msg + joueur.voiture;
-        // |____________________________________________________________________________________________________|
-        for (int i = 0; i < (100 - position); i++) {
+        for (int i = 0; i < position; i++) {
             msg = msg + " ";
         }
-        msg = msg + "|\n ";
-        for (int i = 0; i < 98; i++) {
+        msg = msg + "|\n|";
+        for (int i = 0; i < 100; i++) {
             msg = msg + "_";
         };
         msg = msg + "|";
