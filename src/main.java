@@ -7,11 +7,9 @@ class main extends Program {
     final String[] cards_name = new String[]{"+50 KM", "+100 KM"};
     final int[] cards_value = new int[]{50,100};
     final int[] cards_nb = new int[]{90,10};
-    void algorithm() {
-        // players P = new players();
-        //println("🚗");
-        Players p = newPlayers(1,"TEST","🚗");
-        p.position_Plateau = 100;
+    void _algorithm() {
+        Players p = newPlayers(1,"TEST","🚐");
+        p.position_Plateau = 485;
         println(generateRoute(p));
     }
     void start(){
@@ -89,32 +87,70 @@ class main extends Program {
                 saisie = readInt();
             }
             return saisie;
+
+
     }
-    String generateRoute( Players joueur){
+
+    void testGenerateRoute(){
+        Players p = newPlayers(1,"J1","🚗");
+        p.position_Plateau = 1000;
+        assertEquals(" __________________________________________________\n|                                                  |\n|                                                🚗|\n|__________________________________________________|",generateRoute(p));
+        Players p2 = newPlayers(1,"J2","🚙");
+        p2.position_Plateau = 0;
+        assertEquals(" __________________________________________________\n|                                                  |\n|🚙                                                |\n|__________________________________________________|",generateRoute(p2));
+        Players p3 = newPlayers(1,"J3","🚐");
+        p3.position_Plateau = 485;
+        assertEquals(" __________________________________________________\n|                                                  |\n|                      🚐                          |\n|__________________________________________________|",generateRoute(p3));
+    }
+    /*
+     Fonction generateRoute qui genere la route d un joueur ainsi que sa position.
+     joueur (Players) : objet Joueur.
+     return (String): La route avec la voiture à la bonne position;
+    */
+    String generateRoute(Players joueur) {
         String msg = " ";
-        int position = joueur.position_Plateau;
-        // les tiret en haut
-        for (int i = 0; i < 100; i++) {
-            msg = msg + "_";
+        int position = joueur.position_Plateau / 20; // Conversion en "blocs" de 10 km;
+        int voitureWidth = 2;
+    
+        // Ligne du haut
+        for (int i = 0; i < 50; i++) {
+            msg += "_";
         }
-        msg = msg + " \n|" ;
-        // la ligne de la voiture
-        for (int i = 0; i < 100; i++) {
-            msg = msg + " ";
+        msg += "\n|";
+    
+        // Ligne vide
+        for (int i = 0; i < 50; i++) {
+            msg += " ";
         }
         msg += "|\n|";
-        for (int i = 0; i < 100 - position; i++) {
-            msg = msg + " ";
+    
+        // Espaces avant la voiture
+        for (int i = 0; i < position - voitureWidth; i++) {
+            msg += " ";
         }
-        msg = msg + joueur.voiture;
-        for (int i = 0; i < position; i++) {
-            msg = msg + " ";
+    
+        // Ajouter la voiture
+        msg += joueur.voiture;
+    
+        // Espaces après la voiture (ajusté pour que la voiture ne dépasse pas)
+        int espace = 50 - position;
+        if(position == 0){
+            espace = 48;
         }
-        msg = msg + "|\n|";
-        for (int i = 0; i < 100; i++) {
-            msg = msg + "_";
-        };
-        msg = msg + "|";
+        for (int i = 0; i < espace; i++) { // Ajustement de l espace après la voiture;
+            msg += " ";
+        }
+    
+        msg += "|\n|";
+    
+        // Ligne du bas
+        for (int i = 0; i < 50; i++) {
+            msg += "_";
+        }
+        msg += "|";
+    
         return msg;
     }
+    
+    
 }
