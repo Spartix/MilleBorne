@@ -1,28 +1,43 @@
 class main extends Program {
+
     // les voitures en String car en Char ils n existent pas
     final String[] voitures_dispo = new String[]{"🚗","🚙","🚕","🚐","🚓"};
-    // taille de la pioche au début du jeu;
-    final int taille_pioche = 100;
+
     // noms des cartes , leur associations en valeur et leur associations en nombre;
     final String[] cards_name = new String[]{"+50 KM", "+100 KM"};
     final int[] cards_value = new int[]{50,100};
     final int[] cards_nb = new int[]{90,10};
-    void _algorithm() {
-        Players p = newPlayers(1,"TEST","🚐");
-        p.position_Plateau = 485;
-        println(generateRoute(p));
+
+
+    void algorithm() {
+        Cards[] pioche = initPaquet(cards_name,cards_value,cards_nb);
+        println(toString(pioche));
     }
+
+    
     void start(){
         int nbJoueurs = saisir("Entrez un nome de joueurs :",2,5);
         Plateau plateau = newPlateau(100,nbJoueurs);
         initJoueurs(plateau);
     }
 
-    Cards[] initPaquet(int total, String name[] , int[] value){
+    int taillePaquet(int[] nombre){
+        int total = 0;
+        for (int i = 0; i < length(nombre); i++) {
+            total += nombre[i];
+        }
+        return total;
+    }
+
+    Cards[] initPaquet(String name[] , int[] value , int[] nombre){
         // fonction pour initialiser une pioche 
-        Cards[] paquet  = new Cards[total];
-        for (int i = 0; i < total; i++) {
-            paquet[i] = newCards(cards_name[i],cards_value[i]);
+        Cards[] paquet  = new Cards[taillePaquet(nombre)];
+        int positionDansLePaquet = 0;
+        for (int typeDeCarte = 0; typeDeCarte < length(nombre); typeDeCarte++) {
+            for (int nbDeCarte = 0; nbDeCarte < nombre[typeDeCarte] ; nbDeCarte++) {
+                paquet[positionDansLePaquet] = newCards(name[typeDeCarte],value[typeDeCarte]);
+                positionDansLePaquet += 1;
+            }
         }
         return paquet;
     }
@@ -152,5 +167,11 @@ class main extends Program {
         return msg;
     }
     
-    
+    String toString(Cards[] paquet){
+        String msg = "";
+        for (int i = 0; i < length(paquet); i++) {
+            msg += paquet[i].name + " " + paquet[i].value +"\n";
+        }
+        return msg;
+    }
 }
