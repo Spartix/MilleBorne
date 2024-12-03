@@ -16,7 +16,7 @@ class main extends Program {
 
     
     void start(){
-        int nbJoueurs = saisir("Entrez un nombre de joueurs : 1,4");
+        int nbJoueurs = saisir("Entrez un nombre de joueurs : ", 1, 4);
         Plateau plateau = newPlateau(100,nbJoueurs);
         initJoueurs(plateau);
     }
