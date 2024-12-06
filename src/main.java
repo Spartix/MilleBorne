@@ -4,22 +4,26 @@ class main extends Program {
     final String[] voitures_dispo = new String[]{"🚗","🚙","🚕","🚐","🚓"};
 
     // noms des cartes , leur associations en valeur et leur associations en nombre;
-    final String[] cards_name = new String[]{"+50 KM", "+100 KM"};
-    final int[] cards_value = new int[]{50,100};
-    final int[] cards_nb = new int[]{90,10};
+    Cards[] cartes_borne = new Cards[]{ Cards.BORNES_50,  Cards.BORNES_100 , Cards.BORNES_150 , Cards.BORNES_200 , Cards.JOKER};
+    Cards[] malus = new Cards[] { Cards.CREVAISON , Cards.FEU_ROUGE , Cards.LIMIT_50  , Cards.LIMIT_100 , Cards.ACCIDENT};
+    Cards[] bonus = new Cards[]{ Cards.ROUES  , Cards.FEU_VERT , Cards.NO_LIMIT , Cards.GARAGE};
+    // nb de cartes
+    final int nombre_cartes_bornes = 60;
+    final int nombre_cartes_malus = 30;
 
 
     void algorithm() {
-        Cards[] pioche = initPaquet(cards_name,cards_value,cards_nb);
-        println(toString(pioche));
+        start();
     }
-
     
     void start(){
-        int nbJoueurs = saisir("Entrez un nombre de joueurs : ", 1, 4);
+        int nbJoueurs = saisir("Entrez un nombre de joueurs : ", 2, 4);
         Plateau plateau = newPlateau(100,nbJoueurs);
-        initJoueurs(plateau);
+        initPioche(plateau);
+        println(toString(plateau.pioche));
+        //initJoueurs(plateau);
     }
+
 
     int taillePaquet(int[] nombre){
         int total = 0;
@@ -29,24 +33,33 @@ class main extends Program {
         return total;
     }
 
-    Cards[] initPaquet(String name[] , int[] value , int[] nombre){
-        // fonction pour initialiser une pioche 
-        Cards[] paquet  = new Cards[taillePaquet(nombre)];
-        int positionDansLePaquet = 0;
-        for (int typeDeCarte = 0; typeDeCarte < length(nombre); typeDeCarte++) {
-            for (int nbDeCarte = 0; nbDeCarte < nombre[typeDeCarte] ; nbDeCarte++) {
-                paquet[positionDansLePaquet] = newCards(name[typeDeCarte],value[typeDeCarte]);
-                positionDansLePaquet += 1;
+
+    Cards carteAleatoire(Cards[] paquet){
+        // donne une carte aleatoire parmis une liste de carte (Cards)
+        return paquet[(int) (random() * length(paquet))];
+    }
+
+
+    //initialisations 
+
+    void initPioche(Plateau p){
+        // fonction pour initialiser une pioche pour le plateau p , aleatoire
+        p.nb_cartes_pioche = nombre_cartes_bornes + (nombre_cartes_malus * 2);
+        p.pioche = new Cards[p.nb_cartes_pioche];
+        int i = 0;
+        while (i < p.nb_cartes_pioche) {
+            if (i < nombre_cartes_malus) {
+                p.pioche[i] = carteAleatoire(malus);
+                i++;
+                p.pioche[i] = carteAleatoire(bonus);
+                i++;
+            }else{
+                p.pioche[i] = carteAleatoire(cartes_borne);
+                i++;
             }
         }
-        return paquet;
     }
-    Cards newCards(String name, int value){
-        Cards carte = new Cards();
-        carte.name = name;
-        carte.value = value;
-        return carte;
-    }
+
     void initJoueurs(Plateau plat){
         // fonction qui demande les infos de chaque joueurs
         for (int i = 1; i <= length(plat.liste_joueurs); i++) {
@@ -58,14 +71,6 @@ class main extends Program {
         }
     }
 
-    String getVoiture(){
-        /* function qui retourne la liste des voiture en string;*/
-        String msg = "";
-        for (int i = 0; i < length(voitures_dispo); i++) {
-            msg = msg + voitures_dispo[i] + " ";
-        }
-        return msg;
-    }
     void testGetVoiture(){
         assertEquals("🚗 🚙 🚕 🚐 🚓 " , getVoiture());
     }
@@ -98,12 +103,10 @@ class main extends Program {
             print(message);
             int saisie = readInt();
             while (saisie < min || saisie > max) {
-                print("Nombre entré invalide (doit être entre" + min + "et" + max+")");
+                print("Nombre entré invalide (doit être entre " + min + " et " + max+")");
                 saisie = readInt();
             }
             return saisie;
-
-
     }
 
     void testGenerateRoute(){
@@ -117,12 +120,14 @@ class main extends Program {
         p3.position_Plateau = 485;
         assertEquals(" __________________________________________________\n|                                                  |\n|                      🚐                          |\n|__________________________________________________|",generateRoute(p3));
     }
+
+
+    String generateRoute(Players joueur) {
     /*
      Fonction generateRoute qui genere la route d un joueur ainsi que sa position.
      joueur (Players) : objet Joueur.
      return (String): La route avec la voiture à la bonne position;
     */
-    String generateRoute(Players joueur) {
         String msg = " ";
         int position = joueur.position_Plateau / 20; // Conversion en "blocs" de 10 km;
         int voitureWidth = 2;
@@ -166,12 +171,30 @@ class main extends Program {
     
         return msg;
     }
-    
+
+
+    // Les fonctions toString des diffenrents nouveaux type
+
     String toString(Cards[] paquet){
         String msg = "";
         for (int i = 0; i < length(paquet); i++) {
-            msg += paquet[i].name + " " + paquet[i].value +"\n";
+            msg += paquet[i] +" ";
         }
         return msg;
     }
+    String toString(String[] voitures){
+        /* function qui retourne la liste des voiture en string;*/
+        String msg = "";
+        for (int i = 0; i < length(voitures); i++) {
+            msg = msg + voitures[i] + " ";
+        }
+        return msg;
+    }
+    // String toString(Cards[] paquet){
+    //     String msg = "";
+    //     for (int i = 0; i < length(paquet); i++) {
+    //         msg += paquet[i].name + " " + paquet[i].value +"\n";
+    //     }
+    //     return msg;
+    // }
 }
