@@ -5,6 +5,9 @@ class Players{
     int position_Plateau représente la poisition actuel du joueur sur le plateau (1 = 1KM);
     Cards[] jeu représente la main d un joueur (les cartes qu il a actuellement dans sa main);
     nombre_cartes représente le nombre de carte total que a un joueur dans sa main (max 6) (surement ultra useless car max 6 cartes);
+    String pseudo représente le pseudo du joueur choisi au début du jeu;
+    index_vide représente l index du tableau jeu où me joueur n a pas de carte (positionnement de la derniere carte joué);
+    Cards[] Malus représente la liste des malus que le joueur subis;
     */
     int numero;
     String voiture;
@@ -13,4 +16,5 @@ class Players{
     int nombre_cartes=0;
     String pseudo;
     int index_vide=6;
+    Cards[] malus;
 }

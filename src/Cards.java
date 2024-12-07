@@ -3,4 +3,4 @@ enum Cards{
     CREVAISON , FEU_ROUGE , FEU_VERT, 
     JOKER , LIMIT_50 , NO_LIMIT ,
     LIMIT_100 , ACCIDENT,GARAGE;
-    }
+}

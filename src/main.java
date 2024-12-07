@@ -216,11 +216,46 @@ class main extends Program {
         }
         return msg;
     }
-    // String toString(Cards[] paquet){
-    //     String msg = "";
-    //     for (int i = 0; i < length(paquet); i++) {
-    //         msg += paquet[i].name + " " + paquet[i].value +"\n";
-    //     }
-    //     return msg;
-    // }
+
+    boolean avancement(Cards carte , Players joueur){
+        /*
+            Fonction avancement qui regarde si un joueur peut jouer sa carte , la joue ou la défausse le cas écheant;
+            carte (Cards) : Carte joué par le joueur;
+            joueur (Players) : Object joueur qui joue la carte;
+            return (boolean) : la carte a été jouer ou non (défaussé si non joué);
+         */
+        if(!estBloquer(joueur)){
+            return jouerCarte(carte);
+        }else{
+            return contrerMalus(carte,joueur);
+        }
+    }
+
+    boolean estBloquer(Players joueur){
+        int i = 0;
+        while (i < length(joueur.malus) && joueur.malus[i] == null) {
+            i ++;
+        }
+        return i != length(joueur.malus);
+    }
+
+
+
+        // a faire
+    boolean jouerCarte(Cards carte , Players joueur){
+        if(reponseBonne(carte)){
+            if(carte.value != null){
+                joueur.position_Plateau += carte.value;
+            }
+        }
+        return true;
+    }
+    boolean reponseBonne(Cards carte){
+        //question(carte);
+
+        return true;
+    }
+    boolean contrerMalus(Cards carte,Players joueur){
+        return true;
+    }
 }
