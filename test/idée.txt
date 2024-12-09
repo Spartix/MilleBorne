@@ -1,5 +1,8 @@
 mille borne x question pour un champions
 
+Dans players mettre tous les malus
+Cards a name + value d'avancement + is avancement card
+
    ____________________________________________________________________________________________________
   |                                                                                                    |
 🚗|                                                                                                    |
