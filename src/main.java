@@ -6,9 +6,9 @@ class main extends Program {
     // noms des cartes , leur associations en valeur et leur associations en nombre;
 
     // METTRE EN FINAL ET METTRE EN MAJ
-    Cards[] cartes_borne = new Cards[]{ Cards.BORNES_50,  Cards.BORNES_100 , Cards.BORNES_150 , Cards.BORNES_200 , Cards.JOKER};
-    Cards[] malus = new Cards[] { Cards.CREVAISON , Cards.FEU_ROUGE , Cards.LIMIT_50  , Cards.LIMIT_100 , Cards.ACCIDENT};
-    Cards[] bonus = new Cards[]{ Cards.ROUES  , Cards.FEU_VERT , Cards.NO_LIMIT , Cards.GARAGE};
+    NameCards[] cartes_borne = new NameCards[]{ NameCards.BORNES_50,  NameCards.BORNES_100 , NameCards.BORNES_150 , NameCards.BORNES_200 , NameCards.JOKER};
+    NameCards[] malus = new NameCards[] { NameCards.CREVAISON , NameCards.FEU_ROUGE , NameCards.LIMIT_50  , NameCards.LIMIT_100 , NameCards.ACCIDENT};
+    NameCards[] bonus = new NameCards[]{ NameCards.ROUES  , NameCards.FEU_VERT , NameCards.NO_LIMIT , NameCards.GARAGE};
     // nb de cartes
     final int nombre_cartes_bornes = 60;
     final int nombre_cartes_malus = 30;
@@ -225,7 +225,7 @@ class main extends Program {
             return (boolean) : la carte a été jouer ou non (défaussé si non joué);
          */
         if(!estBloquer(joueur)){
-            return jouerCarte(carte);
+            return jouerCarte(carte, joueur);
         }else{
             return contrerMalus(carte,joueur);
         }
@@ -244,8 +244,8 @@ class main extends Program {
         // a faire
     boolean jouerCarte(Cards carte , Players joueur){
         if(reponseBonne(carte)){
-            if(carte.value != null){
-                joueur.position_Plateau += carte.value;
+            if(carte == Cards.BORNES_50 || carte == Cards.BORNES_50 || carte == Cards.BORNES_100 || carte == Cards.BORNES_150 || carte == Cards.BORNES_200){
+                avancerDe(carte , joueur);
             }
         }
         return true;

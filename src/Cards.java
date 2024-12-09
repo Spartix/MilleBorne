@@ -1,6 +1,4 @@
-enum Cards{
-    BORNES_50,  BORNES_100 , BORNES_150 , BORNES_200 , ROUES ,
-    CREVAISON , FEU_ROUGE , FEU_VERT, 
-    JOKER , LIMIT_50 , NO_LIMIT ,
-    LIMIT_100 , ACCIDENT,GARAGE;
+class Cards{
+    NameCards nom;
+    int valeurDeDéplacement=0;
 }
