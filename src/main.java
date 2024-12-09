@@ -20,7 +20,7 @@ class main extends Program {
     
     void start(){
         int nbJoueurs = saisir("Entrez un nombre de joueurs : ", 2, 4);
-        Plateau plateau = newPlateau(100,nbJoueurs);
+        Plateau plateau = newPlateau(nbJoueurs);
         initPioche(plateau);
         println(toString(plateau.pioche));
         //initJoueurs(plateau);
@@ -28,6 +28,7 @@ class main extends Program {
 
 
     int taillePaquet(int[] nombre){
+        //
         int total = 0;
         for (int i = 0; i < length(nombre); i++) {
             total += nombre[i];
@@ -44,23 +45,25 @@ class main extends Program {
 
     //initialisations 
 
-    void initPioche(Plateau p){
+    void initPioche(Plateau plateau){
         // fonction pour initialiser une pioche pour le plateau p , aleatoire
-        p.nb_cartes_pioche = nombre_cartes_bornes + (nombre_cartes_malus * 2);
-        p.pioche = new Cards[p.nb_cartes_pioche];
+        plateau.nb_cartes_pioche = nombre_cartes_bornes + (nombre_cartes_malus * 3);
+        plateau.pioche = new Cards[plateau.nb_cartes_pioche];
         int i = 0;
-        while (i < p.nb_cartes_pioche) {
+        while (i < plateau.nb_cartes_pioche) {
             if (i < nombre_cartes_malus) {
-                p.pioche[i] = carteAleatoire(malus);
+                plateau.pioche[i] = carteAleatoire(malus);
                 i++;
-                p.pioche[i] = carteAleatoire(bonus);
+                plateau.pioche[i] = carteAleatoire(bonus);
+                i++;
+                plateau.pioche[i] = carteAleatoire(bonus);
                 i++;
             }else{
-                p.pioche[i] = carteAleatoire(cartes_borne);
+                plateau.pioche[i] = carteAleatoire(cartes_borne);
                 i++;
             }
         }
-        melanger(p.pioche);
+        melanger(plateau.pioche);
     }
 
     void melanger(Cards[] paquet){
@@ -101,10 +104,9 @@ class main extends Program {
         assertEquals("🚗 🚙 🚕 🚐 🚓 " , toString(voitures_dispo));
     }
 
-    Plateau newPlateau(int nbCartes ,int  nbJoueurs){
+    Plateau newPlateau(int  nbJoueurs){
         // fonction pour gen le plateau
             Plateau plat = new Plateau();
-            plat.pioche = new Cards[nbCartes];
             plat.liste_joueurs = new Players[nbJoueurs];
             return plat;
     }
@@ -116,6 +118,7 @@ class main extends Program {
         joueur.numero = numero;
         joueur.pseudo = pseudo;
         joueur.voiture = voiture;
+        joueur.malus = new Cards[nombre_cartes_malus]
         return joueur;
     }
     int saisir(String message ,int min , int max){
@@ -208,6 +211,7 @@ class main extends Program {
         }
         return msg;
     }
+
     String toString(String[] voitures){
         /* function qui retourne la liste des voiture en string;*/
         String msg = "";
