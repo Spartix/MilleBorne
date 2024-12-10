@@ -22,13 +22,16 @@ class main extends Program {
         int nbJoueurs = saisir("Entrez un nombre de joueurs : ", 2, 4);
         Plateau plateau = newPlateau(nbJoueurs);
         initPioche(plateau);
-        println(toString(plateau.pioche));
+        //println(toString(plateau.pioche));
+        initJoueurs(plateau);
+        distribuerCartes(plateau);
+        println("joueur 1 a "+toString(plateau.liste_joueurs[0].jeu));
         //initJoueurs(plateau);
     }
 
 
     int taillePaquet(int[] nombre){
-        //
+        //pas utile
         int total = 0;
         for (int i = 0; i < length(nombre); i++) {
             total += nombre[i];
@@ -83,6 +86,7 @@ class main extends Program {
         }
         return paquet;
     }
+
     int valeurCarte(NameCards nom){
         for (int i = 0; i < length(cartes_borne); i++) {
             if(nom == cartes_borne[i]){
@@ -96,9 +100,10 @@ class main extends Program {
     }
     void initJoueurs(Plateau plat){
         // fonction qui demande les infos de chaque joueurs
-        for (int i = 1; i <= length(plat.liste_joueurs); i++) {
-            print("Bonjour joueur "+ (i) + "! Veuillez entrer votre pseudo :");
+        for (int i = 0; i < length(plat.liste_joueurs); i++) {
+            print("Bonjour joueur "+ (i+1) + " ! Veuillez entrer votre pseudo :");
             String pseudo = readString(); // ICI FAIRE UN CONTROLE DE SASIE;
+            println("1  2  3  4  5");
             println(toString(voitures_dispo));
             int nb_Voiture = saisir("Veuillez choisir un vehicule :",1,length(voitures_dispo));
             plat.liste_joueurs[i] = newPlayers(i, pseudo , voitures_dispo[nb_Voiture-1]);
@@ -233,7 +238,9 @@ class main extends Program {
     String toString(Cards[] paquet){
         String msg = "";
         for (int i = 0; i < length(paquet); i++) {
-            msg += paquet[i].nom +" ";
+            if(paquet[i] != null){
+                msg += paquet[i].nom +" ";
+            }
         }
         return msg;
     }
