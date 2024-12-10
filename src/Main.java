@@ -14,24 +14,69 @@ class Main extends Program {
     final int nombre_cartes_malus = 30;
 
 
+
+
+    // int position_fleche = 0;
+    // void keyTypedInConsole(char key) {
+    //     //println("Vous avez appuyé sur : " + key+ " (pressez 'q' pour quitter)");
+    //     switch (key) {
+    //         case ANSI_UP:
+    //             position_fleche += 1;
+    //             printFleche(position_fleche);
+    //             break;
+    //         case 'q' :
+    //             println("Ok, au revoir ...");
+    //             break;
+    //     }
+        
+    // }
+    // void printFleche(int pos){
+    //     for (int i = 0; i < pos; i++) {
+    //         print(" ");
+    //     }
+    //     print("^");
+    // }
+
+
+
     void algorithm() {
+        //enableKeyTypedInConsole(true);
         start();
     }
     
     void start(){
+        Plateau plateau = initJeu();
+        int joueur_actuel = 0;
+        while (true) {
+            tourJoueur(plateau.liste_joueurs[joueur_actuel] , plateau);
+            println("Tour du joueur "+(joueur_actuel + 1 ));
+            joueur_actuel = (joueur_actuel+1) % length(plateau.liste_joueurs);
+        }
+        //initJoueurs(plateau);
+    }
+
+    void tourJoueur(Players joueur , Plateau plat){
+        piocher(plat);
+        println(toString(joueur.jeu));
+        print("numéro de la carte a joué: ");
+        int choix = readInt();
+        println("la carte joué est "+joueur.jeu[choix-1].nom);
+
+    }
+
+    Plateau initJeu(){
         int nbJoueurs = saisir("Entrez un nombre de joueurs : ", 2, 4);
         Plateau plateau = newPlateau(nbJoueurs);
         initPioche(plateau);
         //println(toString(plateau.pioche));
         initJoueurs(plateau);
         distribuerCartes(plateau);
-        println(generateRoute(plateau.liste_joueurs[0]));
+        //println(generateRoute(plateau.liste_joueurs[0]));
         println(plateau.liste_joueurs[0].pseudo+" a "+toString(plateau.liste_joueurs[0].jeu));
         piocherCarte(plateau, 0);
         println(plateau.liste_joueurs[0].pseudo+" a "+toString(plateau.liste_joueurs[0].jeu));
-        //initJoueurs(plateau);
+        return plateau;
     }
-
 
     int taillePaquet(int[] nombre){
         //pas utile
