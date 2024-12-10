@@ -77,10 +77,11 @@ class main extends Program {
     }
     Cards[] creerPaquetNom(NameCards[] noms){
         //fonction pour creer un paquet de carte Cards[] à partir d un tableau de NameCards (nom des cartes)
-        Cards[] carte = new Cards[length(noms)];
+        Cards[] paquet = new Cards[length(noms)];
         for (int i = 0; i < length(noms); i++) {
-            carte[i] = newCards(noms[i],valeurCarte(noms[i]),estCarteBorne(noms[i]));
+            paquet[i] = newCards(noms[i],valeurCarte(noms[i]),estCarteBorne(noms[i]));
         }
+        return paquet;
     }
     int valeurCarte(NameCards nom){
         for (int i = 0; i < length(cartes_borne); i++) {
@@ -268,8 +269,8 @@ class main extends Program {
         // a faire
     boolean jouerCarte(Cards cartejoué , Players joueur){
         if(reponseBonne(cartejoué)){
-            if(estCarteBorne(cartejoué)){
-                avancerDe(carte , joueur);
+            if(estCarteBorne(cartejoué.nom)){
+                avancerDe(joueur , valeurCarte(cartejoué.nom));
             }
         }
         return true;
