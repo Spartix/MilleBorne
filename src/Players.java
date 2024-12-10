@@ -9,10 +9,11 @@ class Players{
     index_vide représente l index du tableau jeu où le joueur n a pas de carte (positionnement de la derniere carte joué);
     Malus malus représente les malus que le joueur subis ou non;
     */
+
     int numero;
     String voiture;
     int position_Plateau=0;
-    Cards[] jeu;
+    Cards[] jeu = new Cards[7];
     int nombre_cartes=6;
     String pseudo;
     int index_vide=6;

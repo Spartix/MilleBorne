@@ -6,4 +6,5 @@ class Malus{
     boolean crever=false;
     boolean accident=false;
     int limit=200;
+    
 }
