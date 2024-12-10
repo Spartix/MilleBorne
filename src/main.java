@@ -232,7 +232,7 @@ class main extends Program {
     String toString(Cards[] paquet){
         String msg = "";
         for (int i = 0; i < length(paquet); i++) {
-            msg += paquet[i] +" ";
+            msg += paquet[i].nom +" ";
         }
         return msg;
     }
