@@ -52,14 +52,14 @@ class main extends Program {
         int i = 0;
         while (i < plateau.nb_cartes_pioche) {
             if (i < nombre_cartes_malus) {
-                plateau.pioche[i] = carteAleatoire(malus);
+                plateau.pioche[i] = carteAleatoire(creerPaquetNom(malus));
                 i++;
-                plateau.pioche[i] = carteAleatoire(bonus);
+                plateau.pioche[i] = carteAleatoire(creerPaquetNom(bonus));
                 i++;
-                plateau.pioche[i] = carteAleatoire(bonus);
+                plateau.pioche[i] = carteAleatoire(creerPaquetNom(bonus));
                 i++;
             }else{
-                plateau.pioche[i] = carteAleatoire(cartes_borne);
+                plateau.pioche[i] = carteAleatoire(creerPaquetNom(cartes_borne));
                 i++;
             }
         }
@@ -75,7 +75,24 @@ class main extends Program {
             paquet[i] = carte_choisi;
         }
     }
-
+    Cards[] creerPaquetNom(NameCards[] noms){
+        //fonction pour creer un paquet de carte Cards[] à partir d un tableau de NameCards (nom des cartes)
+        Cards[] carte = new Cards[length(noms)];
+        for (int i = 0; i < length(noms); i++) {
+            carte[i] = newCards(noms[i],valeurCarte(noms[i]),estCarteBorne(noms[i]));
+        }
+    }
+    int valeurCarte(NameCards nom){
+        for (int i = 0; i < length(cartes_borne); i++) {
+            if(nom == cartes_borne[i]){
+                return (i+1) * 50;
+            }
+        }
+        return 0;
+    }
+    boolean estCarteBorne(NameCards nom){
+        return valeurCarte(nom) > 0;
+    }
     void initJoueurs(Plateau plat){
         // fonction qui demande les infos de chaque joueurs
         for (int i = 1; i <= length(plat.liste_joueurs); i++) {
@@ -111,6 +128,13 @@ class main extends Program {
             return plat;
     }
 
+    Cards newCards(NameCards name , int value, boolean borne_carte){
+        Cards carte = new Cards();
+        carte.nom = name;
+        carte.valeurDeDéplacement = value;
+        carte.borne_carte = borne_carte;
+        return carte;
+    }
 
     Players newPlayers(int numero , String pseudo , String voiture ){
         /* Fonction de construction du joueur */
@@ -118,7 +142,7 @@ class main extends Program {
         joueur.numero = numero;
         joueur.pseudo = pseudo;
         joueur.voiture = voiture;
-        joueur.malus = new Cards[nombre_cartes_malus]
+        joueur.malus = new Malus();
         return joueur;
     }
     int saisir(String message ,int min , int max){
@@ -236,23 +260,22 @@ class main extends Program {
     }
 
     boolean estBloquer(Players joueur){
-        int i = 0;
-        while (i < length(joueur.malus) && joueur.malus[i] == null) {
-            i ++;
-        }
-        return i != length(joueur.malus);
+        return joueur.malus.feu || joueur.malus.crever || joueur.malus.accident;
     }
 
 
 
         // a faire
-    boolean jouerCarte(Cards carte , Players joueur){
-        if(reponseBonne(carte)){
-            if(carte == Cards.BORNES_50 || carte == Cards.BORNES_50 || carte == Cards.BORNES_100 || carte == Cards.BORNES_150 || carte == Cards.BORNES_200){
+    boolean jouerCarte(Cards cartejoué , Players joueur){
+        if(reponseBonne(cartejoué)){
+            if(estCarteBorne(cartejoué)){
                 avancerDe(carte , joueur);
             }
         }
         return true;
+    }
+    void avancerDe(Players joueur , int value){
+        //fonction pour faire avancer le joueur de value KM
     }
     boolean reponseBonne(Cards carte){
         //question(carte);
