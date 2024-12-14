@@ -1,4 +1,4 @@
-class main extends Program {
+class Main extends Program {
 
     // les voitures en String car en Char ils n existent pas
     final String[] voitures_dispo = new String[]{"🚗","🚙","🚕","🚐","🚓"};
@@ -25,7 +25,7 @@ class main extends Program {
         //println(toString(plateau.pioche));
         initJoueurs(plateau);
         distribuerCartes(plateau);
-        println("joueur 1 a "+toString(plateau.liste_joueurs[0].jeu));
+        println(plateau.liste_joueurs[0].pseudo+" a "+toString(plateau.liste_joueurs[0].jeu));
         //initJoueurs(plateau);
     }
 
@@ -101,11 +101,11 @@ class main extends Program {
     void initJoueurs(Plateau plat){
         // fonction qui demande les infos de chaque joueurs
         for (int i = 0; i < length(plat.liste_joueurs); i++) {
-            print("Bonjour joueur "+ (i+1) + " ! Veuillez entrer votre pseudo :");
+            print("Bonjour joueur "+ (i+1) + " ! Veuillez entrer votre pseudo : ");
             String pseudo = readString(); // ICI FAIRE UN CONTROLE DE SASIE;
             println("1  2  3  4  5");
             println(toString(voitures_dispo));
-            int nb_Voiture = saisir("Veuillez choisir un vehicule :",1,length(voitures_dispo));
+            int nb_Voiture = saisir("Veuillez choisir un vehicule : ",1,length(voitures_dispo));
             plat.liste_joueurs[i] = newPlayers(i, pseudo , voitures_dispo[nb_Voiture-1]);
         }
     }
@@ -180,56 +180,42 @@ class main extends Program {
         assertEquals(" __________________________________________________\n|                                                  |\n|                      🚐                          |\n|__________________________________________________|",generateRoute(p3));
     }
 
-
     String generateRoute(Players joueur) {
     /*
      Fonction generateRoute qui genere la route d un joueur ainsi que sa position.
      joueur (Players) : objet Joueur.
      return (String): La route avec la voiture à la bonne position;
     */
-        String msg = " ";
-        int position = joueur.position_Plateau / 20; // Conversion en "blocs" de 10 km;
-        int voitureWidth = 2;
-    
-        // Ligne du haut
-        for (int i = 0; i < 50; i++) {
-            msg += "_";
-        }
-        msg += "\n|";
-    
-        // Ligne vide
-        for (int i = 0; i < 50; i++) {
-            msg += " ";
-        }
-        msg += "|\n|";
+        int position = joueur.position_Plateau / 20;
+        String msg = "   __________________________________________________ \n  |                                                  |\n";
     
         // Espaces avant la voiture
-        for (int i = 0; i < position - voitureWidth; i++) {
-            msg += " ";
-        }
-    
-        // Ajouter la voiture
-        msg += joueur.voiture;
-    
-        // Espaces après la voiture (ajusté pour que la voiture ne dépasse pas)
-        int espace = 50 - position;
         if(position == 0){
-            espace = 48;
+            msg += "🚗|                                                  | \n  |__________________________________________________|";
+            return msg;
+        }else if(position == 1){
+            msg += "  🚗                                                 | \n  |__________________________________________________|";
+            return msg;
+        }else{
+            msg += "  |";
+            for (int i = 0; i < position - 2; i++) {
+                msg += " ";
+            }
+        
+            // Ajouter la voiture
+            msg += joueur.voiture;
+        
+            // Espaces après la voiture (ajusté pour que la voiture ne dépasse pas)
+            int espace = 50 - position;
+            for (int i = 0; i < espace; i++) { // Ajustement de l espace après la voiture;
+                msg += " ";
+            }
+        
+            msg += "|\n  |__________________________________________________|";
         }
-        for (int i = 0; i < espace; i++) { // Ajustement de l espace après la voiture;
-            msg += " ";
-        }
-    
-        msg += "|\n|";
-    
-        // Ligne du bas
-        for (int i = 0; i < 50; i++) {
-            msg += "_";
-        }
-        msg += "|";
-    
         return msg;
     }
+   
 
 
 
