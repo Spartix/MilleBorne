@@ -25,6 +25,9 @@ class Main extends Program {
         //println(toString(plateau.pioche));
         initJoueurs(plateau);
         distribuerCartes(plateau);
+        println(generateRoute(plateau.liste_joueurs[0]));
+        println(plateau.liste_joueurs[0].pseudo+" a "+toString(plateau.liste_joueurs[0].jeu));
+        piocherCarte(plateau, 0);
         println(plateau.liste_joueurs[0].pseudo+" a "+toString(plateau.liste_joueurs[0].jeu));
         //initJoueurs(plateau);
     }
@@ -279,5 +282,9 @@ class Main extends Program {
     }
     boolean contrerMalus(Cards carte,Players joueur){
         return true;
+    }
+
+    void piocherCarte(Plateau p, int idx){
+        p.liste_joueurs[idx].jeu[p.liste_joueurs[idx].index_vide] = piocher(p);
     }
 }
