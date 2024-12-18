@@ -1,3 +1,5 @@
+import extensions.*;
+import Collections;
 class Main extends Program {
 
     // les voitures en String car en Char ils n existent pas
@@ -52,7 +54,6 @@ class Main extends Program {
             println("Tour du joueur "+(joueur_actuel + 1 ));
             joueur_actuel = (joueur_actuel+1) % length(plateau.liste_joueurs);
         }
-        //initJoueurs(plateau);
     }
 
     void tourJoueur(Players joueur , Plateau plat){
@@ -61,7 +62,11 @@ class Main extends Program {
         print("numéro de la carte a joué: ");
         int choix = readInt();
         println("la carte joué est "+joueur.jeu[choix-1].nom);
-
+        if(jouerCarte(joueur.jeu[choix-1] , joueur)){
+            println("La carte est joué avec success");
+        }else{
+            println("la carte a été defaussé");
+        }
     }
 
     Plateau initJeu(){
@@ -266,6 +271,16 @@ class Main extends Program {
    
 
 
+    Question[] initQuestions(){
+        CSVFile File = loadCSV("../ressources/questionv1.csv");
+        Question[] tabquestion = new Question[rowCount(File)-1];
+        for (int i = 1; i < length(tabquestion) ; i++) {
+            tabquestion[i] = new Question(getCell(File,i,0) , getCell(File,i,1) , 1 , getCell(File,i,2));
+        }
+        return tabquestion;
+    }
+
+
 
     // Les fonctions toString des diffenrents nouveaux type
 
@@ -307,11 +322,10 @@ class Main extends Program {
     }
 
 
-
         // a faire
     boolean jouerCarte(Cards cartejoué , Players joueur){
+        if(estCarteBorne(cartejoué.nom)){
         if(reponseBonne(cartejoué)){
-            if(estCarteBorne(cartejoué.nom)){
                 avancerDe(joueur , valeurCarte(cartejoué.nom));
             }
         }
@@ -319,12 +333,18 @@ class Main extends Program {
     }
     void avancerDe(Players joueur , int value){
         //fonction pour faire avancer le joueur de value KM
+        joueur.position_Plateau += value;
     }
     boolean reponseBonne(Cards carte){
         //question(carte);
 
         return true;
     }
+
+    String[] questionReponse(int niveau , String sujet){
+        return new String[5];
+    }
+
     boolean contrerMalus(Cards carte,Players joueur){
         return true;
     }
