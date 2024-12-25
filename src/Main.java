@@ -328,7 +328,7 @@ class Main extends Program {
     String toString(Question[] quest){
         String msg = "";
         for (int i = 1; i < length(quest); i++) {
-            msg += quest[i].question + "\n";
+            msg += quest[i].getQuestion() + "\n";
         }
         return msg;
     }
