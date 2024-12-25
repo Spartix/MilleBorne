@@ -23,7 +23,10 @@ class Question{
     String getSujet(){
         return this.sujet;
     }
-    Boolean isNiveau(int value){
-        
+    boolean isNiveau(int value){
+        return value == niveau;
+    }
+    boolean goodAnswer(String message){
+        return this.reponse == message;
     }
 }

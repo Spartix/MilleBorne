@@ -1,5 +1,4 @@
-import extensions.*;
-import Collections;
+import extensions.*;  
 class Main extends Program {
 
     // les voitures en String car en Char ils n existent pas
@@ -50,36 +49,41 @@ class Main extends Program {
         Plateau plateau = initJeu();
         int joueur_actuel = 0;
         while (true) {
-            tourJoueur(plateau.liste_joueurs[joueur_actuel] , plateau);
+            print(toString(plateau));
             println("Tour du joueur "+(joueur_actuel + 1 ));
+            tourJoueur(plateau.liste_joueurs[joueur_actuel] , plateau);
             joueur_actuel = (joueur_actuel+1) % length(plateau.liste_joueurs);
         }
     }
 
+
     void tourJoueur(Players joueur , Plateau plat){
-        piocher(plat);
+        joueur.jeu[joueur.index_vide] =  piocher(plat);
         println(toString(joueur.jeu));
         print("numéro de la carte a joué: ");
         int choix = readInt();
-        println("la carte joué est "+joueur.jeu[choix-1].nom);
-        if(jouerCarte(joueur.jeu[choix-1] , joueur)){
+        if (choix < joueur.index_vide ) {
+            choix ++;
+        }
+        println("la carte joué est "+joueur.jeu[choix].nom);
+        if(jouerCarte(joueur.jeu[choix] , joueur , plat)){
             println("La carte est joué avec success");
         }else{
             println("la carte a été defaussé");
         }
+        // vider la case de la carte
+        joueur.index_vide = choix-1;
+        joueur.jeu[choix-1] = null;
     }
 
     Plateau initJeu(){
         int nbJoueurs = saisir("Entrez un nombre de joueurs : ", 2, 4);
         Plateau plateau = newPlateau(nbJoueurs);
         initPioche(plateau);
-        //println(toString(plateau.pioche));
+        initQuestions(plateau);
+        println(toString(plateau.questions));
         initJoueurs(plateau);
         distribuerCartes(plateau);
-        //println(generateRoute(plateau.liste_joueurs[0]));
-        println(plateau.liste_joueurs[0].pseudo+" a "+toString(plateau.liste_joueurs[0].jeu));
-        piocherCarte(plateau, 0);
-        println(plateau.liste_joueurs[0].pseudo+" a "+toString(plateau.liste_joueurs[0].jeu));
         return plateau;
     }
 
@@ -213,12 +217,20 @@ class Main extends Program {
         return (int) : nombre saisie par l'utilisateur;
         */
             print(message);
-            int saisie = readInt();
-            while (saisie < min || saisie > max) {
+            String saisie = readString();
+            while ( !onlyNumbers(saisie) || stringToInt(saisie) < min || stringToInt(saisie) > max) {
                 print("Nombre entré invalide (doit être entre " + min + " et " + max+")");
-                saisie = readInt();
+                saisie = readString();
             }
-            return saisie;
+            return stringToInt(saisie);
+    }
+
+    boolean onlyNumbers(String msg){
+        int i = 0;
+        while ( i < length(msg) && charAt(msg,i) >= '0' && charAt(msg,i) <= '9') {
+            i++;
+        }
+        return i == length(msg);
     }
 
     void testGenerateRoute(){
@@ -244,10 +256,10 @@ class Main extends Program {
     
         // Espaces avant la voiture
         if(position == 0){
-            msg += "🚗|                                                  | \n  |__________________________________________________|";
+            msg += joueur.voiture +"|                                                  | \n  |__________________________________________________|";
             return msg;
         }else if(position == 1){
-            msg += "  🚗                                                 | \n  |__________________________________________________|";
+            msg += "  " + joueur.voiture +"                                                 | \n  |__________________________________________________|";
             return msg;
         }else{
             msg += "  |";
@@ -271,13 +283,15 @@ class Main extends Program {
    
 
 
-    Question[] initQuestions(){
-        CSVFile File = loadCSV("../ressources/questionv1.csv");
+    void initQuestions(Plateau P){
+        //saveCSV( new String[][]{{"OUOU"},{"AA"}} , "./ressources/caca.csv");
+        CSVFile File = loadCSV("./ressources/questionv1.csv");
         Question[] tabquestion = new Question[rowCount(File)-1];
         for (int i = 1; i < length(tabquestion) ; i++) {
             tabquestion[i] = new Question(getCell(File,i,0) , getCell(File,i,1) , 1 , getCell(File,i,2));
+           // println(getCell(File,i,0));
         }
-        return tabquestion;
+        P.questions = tabquestion;
     }
 
 
@@ -303,19 +317,35 @@ class Main extends Program {
         return msg;
     }
 
-    boolean avancement(Cards carte , Players joueur){
-        /*
-            Fonction avancement qui regarde si un joueur peut jouer sa carte , la joue ou la défausse le cas écheant;
-            carte (Cards) : Carte joué par le joueur;
-            joueur (Players) : Object joueur qui joue la carte;
-            return (boolean) : la carte a été jouer ou non (défaussé si non joué);
-         */
-        if(!estBloquer(joueur)){
-            return jouerCarte(carte, joueur);
-        }else{
-            return contrerMalus(carte,joueur);
+    String toString(Plateau plat){
+        String msg = "";
+        for (int i = 0; i < length(plat.liste_joueurs); i++) {
+            msg +=  generateRoute(plat.liste_joueurs[i]) + "\n";
         }
+        return msg;
     }
+
+    String toString(Question[] quest){
+        String msg = "";
+        for (int i = 1; i < length(quest); i++) {
+            msg += quest[i].question + "\n";
+        }
+        return msg;
+    }
+
+    // boolean avancement(Cards carte , Players joueur , Plateau plat){
+    //     /*
+    //         Fonction avancement qui regarde si un joueur peut jouer sa carte , la joue ou la défausse le cas écheant;
+    //         carte (Cards) : Carte joué par le joueur;
+    //         joueur (Players) : Object joueur qui joue la carte;
+    //         return (boolean) : la carte a été jouer ou non (défaussé si non joué);
+    //      */
+    //     if(!estBloquer(joueur)){
+    //         return jouerCarte(carte, joueur , plat);
+    //     }else{
+    //         return contrerMalus(carte,joueur);
+    //     }
+    // }
 
     boolean estBloquer(Players joueur){
         return joueur.malus.feu || joueur.malus.crever || joueur.malus.accident;
@@ -323,9 +353,10 @@ class Main extends Program {
 
 
         // a faire
-    boolean jouerCarte(Cards cartejoué , Players joueur){
+    boolean jouerCarte(Cards cartejoué , Players joueur , Plateau plat){
+
         if(estCarteBorne(cartejoué.nom)){
-        if(reponseBonne(cartejoué)){
+        if(reponseBonne(cartejoué , plat)){
                 avancerDe(joueur , valeurCarte(cartejoué.nom));
             }
         }
@@ -335,11 +366,12 @@ class Main extends Program {
         //fonction pour faire avancer le joueur de value KM
         joueur.position_Plateau += value;
     }
-    boolean reponseBonne(Cards carte){
-        //question(carte);
-
+    boolean reponseBonne(Cards carte , Plateau plat){
+        println(plat.questions[(int)(random() * length(plat.questions))+ 1].getQuestion());
         return true;
     }
+
+
 
     String[] questionReponse(int niveau , String sujet){
         return new String[5];
@@ -348,8 +380,7 @@ class Main extends Program {
     boolean contrerMalus(Cards carte,Players joueur){
         return true;
     }
-
-    void piocherCarte(Plateau p, int idx){
-        p.liste_joueurs[idx].jeu[p.liste_joueurs[idx].index_vide] = piocher(p);
-    }
 }
+
+
+
