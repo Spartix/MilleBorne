@@ -16,7 +16,6 @@ class Main extends Program {
 
 
 
-
     // int position_fleche = 0;
     // void keyTypedInConsole(char key) {
     //     //println("Vous avez appuyé sur : " + key+ " (pressez 'q' pour quitter)");
@@ -51,6 +50,7 @@ class Main extends Program {
         while (true) {
             print(toString(plateau));
             println("Tour du joueur "+(joueur_actuel + 1 ));
+            delay(3000);
             tourJoueur(plateau.liste_joueurs[joueur_actuel] , plateau);
             joueur_actuel = (joueur_actuel+1) % length(plateau.liste_joueurs);
         }
@@ -60,20 +60,26 @@ class Main extends Program {
     void tourJoueur(Players joueur , Plateau plat){
         joueur.jeu[joueur.index_vide] =  piocher(plat);
         println(toString(joueur.jeu));
+        delay(3000);
         print("numéro de la carte a joué: ");
         int choix = readInt();
-        if (choix < joueur.index_vide ) {
+        choix -= 1;
+        if (choix >= joueur.index_vide) {
             choix ++;
         }
+        delay(3000);
+        //println("Le choix est "+ choix);
+        delay(3000);
         println("la carte joué est "+joueur.jeu[choix].nom);
+        delay(3000);
         if(jouerCarte(joueur.jeu[choix] , joueur , plat)){
             println("La carte est joué avec success");
         }else{
             println("la carte a été defaussé");
         }
         // vider la case de la carte
-        joueur.index_vide = choix-1;
-        joueur.jeu[choix-1] = null;
+        joueur.index_vide = choix;
+        joueur.jeu[choix] = null;
     }
 
     Plateau initJeu(){
@@ -158,6 +164,7 @@ class Main extends Program {
     void initJoueurs(Plateau plat){
         // fonction qui demande les infos de chaque joueurs
         for (int i = 0; i < length(plat.liste_joueurs); i++) {
+            clearScreen();
             print("Bonjour joueur "+ (i+1) + " ! Veuillez entrer votre pseudo : ");
             String pseudo = readString(); // ICI FAIRE UN CONTROLE DE SASIE;
             println("1  2  3  4  5");
@@ -352,13 +359,16 @@ class Main extends Program {
     }
 
 
-        // a faire
     boolean jouerCarte(Cards cartejoué , Players joueur , Plateau plat){
 
         if(estCarteBorne(cartejoué.nom)){
-        if(reponseBonne(cartejoué , plat)){
+            if( !estBloquer(joueur) && reponseBonne(cartejoué , plat)){
                 avancerDe(joueur , valeurCarte(cartejoué.nom));
+            }else{
+                return false;
             }
+        }else{
+            println("Carte spécial jouer");
         }
         return true;
     }
@@ -367,8 +377,10 @@ class Main extends Program {
         joueur.position_Plateau += value;
     }
     boolean reponseBonne(Cards carte , Plateau plat){
-        println(plat.questions[(int)(random() * length(plat.questions))+ 1].getQuestion());
-        return true;
+        Question question = plat.questions[(int)(random() * length(plat.questions))+ 1];
+        println(question.getQuestion());
+        String input = toLowerCase(readString());
+        return question.goodAnswer(input);
     }
 
 
