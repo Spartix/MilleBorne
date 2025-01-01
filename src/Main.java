@@ -7,12 +7,12 @@ class Main extends Program {
     // noms des cartes , leur associations en valeur et leur associations en nombre;
 
     // METTRE EN FINAL ET METTRE EN MAJ
-    NameCards[] cartes_borne = new NameCards[]{ NameCards.BORNES_50,  NameCards.BORNES_100 , NameCards.BORNES_150 , NameCards.BORNES_200 , NameCards.JOKER};
-    NameCards[] malus = new NameCards[] { NameCards.CREVAISON , NameCards.FEU_ROUGE , NameCards.LIMIT_50  , NameCards.LIMIT_100 , NameCards.ACCIDENT};
-    NameCards[] bonus = new NameCards[]{ NameCards.ROUES  , NameCards.FEU_VERT , NameCards.NO_LIMIT , NameCards.GARAGE};
+    final NameCards[] CARTES_BORNE = new NameCards[]{ NameCards.BORNES_50,  NameCards.BORNES_100 , NameCards.BORNES_150 , NameCards.BORNES_200 , NameCards.JOKER};
+    final NameCards[] MALUS = new NameCards[] { NameCards.CREVAISON , NameCards.FEU_ROUGE , NameCards.LIMIT_50  , NameCards.LIMIT_100 , NameCards.ACCIDENT};
+    final NameCards[] BONUS = new NameCards[]{ NameCards.ROUES  , NameCards.FEU_VERT , NameCards.NO_LIMIT , NameCards.GARAGE};
     // nb de cartes
-    final int nombre_cartes_bornes = 60;
-    final int nombre_cartes_malus = 30;
+    final int nombre_CARTES_BORNEs = 35;
+    final int nombre_cartes_malus = 100;
 
 
 
@@ -48,10 +48,12 @@ class Main extends Program {
         Plateau plateau = initJeu();
         int joueur_actuel = 0;
         while (true) {
+            clearScreen();
             print(toString(plateau));
             println("Tour du joueur "+(joueur_actuel + 1 ));
-            delay(3000);
+            println("Les malus du joueur sont : "+toString(plateau.liste_joueurs[joueur_actuel].malus));
             tourJoueur(plateau.liste_joueurs[joueur_actuel] , plateau);
+            delay(3000);
             joueur_actuel = (joueur_actuel+1) % length(plateau.liste_joueurs);
         }
     }
@@ -60,18 +62,18 @@ class Main extends Program {
     void tourJoueur(Players joueur , Plateau plat){
         joueur.jeu[joueur.index_vide] =  piocher(plat);
         println(toString(joueur.jeu));
-        delay(3000);
+        //delay(3000);
         print("numéro de la carte a joué: ");
         int choix = readInt();
         choix -= 1;
         if (choix >= joueur.index_vide) {
             choix ++;
         }
-        delay(3000);
+        //delay(3000);
         //println("Le choix est "+ choix);
-        delay(3000);
+        //delay(3000);
         println("la carte joué est "+joueur.jeu[choix].nom);
-        delay(3000);
+        //delay(3000);
         if(jouerCarte(joueur.jeu[choix] , joueur , plat)){
             println("La carte est joué avec success");
         }else{
@@ -113,19 +115,19 @@ class Main extends Program {
 
     void initPioche(Plateau plateau){
         // fonction pour initialiser une pioche pour le plateau p , aleatoire
-        plateau.nb_cartes_pioche = nombre_cartes_bornes + (nombre_cartes_malus * 3);
+        plateau.nb_cartes_pioche = nombre_CARTES_BORNEs + (nombre_cartes_malus * 3);
         plateau.pioche = new Cards[plateau.nb_cartes_pioche];
         int i = 0;
         while (i < plateau.nb_cartes_pioche) {
             if (i < nombre_cartes_malus) {
-                plateau.pioche[i] = carteAleatoire(creerPaquetNom(malus));
+                plateau.pioche[i] = carteAleatoire(creerPaquetNom(MALUS));
                 i++;
-                plateau.pioche[i] = carteAleatoire(creerPaquetNom(bonus));
+                plateau.pioche[i] = carteAleatoire(creerPaquetNom(BONUS));
                 i++;
-                plateau.pioche[i] = carteAleatoire(creerPaquetNom(bonus));
+                plateau.pioche[i] = carteAleatoire(creerPaquetNom(BONUS));
                 i++;
             }else{
-                plateau.pioche[i] = carteAleatoire(creerPaquetNom(cartes_borne));
+                plateau.pioche[i] = carteAleatoire(creerPaquetNom(CARTES_BORNE));
                 i++;
             }
         }
@@ -151,8 +153,8 @@ class Main extends Program {
     }
 
     int valeurCarte(NameCards nom){
-        for (int i = 0; i < length(cartes_borne); i++) {
-            if(nom == cartes_borne[i]){
+        for (int i = 0; i < length(CARTES_BORNE); i++) {
+            if(nom == CARTES_BORNE[i]){
                 return (i+1) * 50;
             }
         }
@@ -340,6 +342,14 @@ class Main extends Program {
         return msg;
     }
 
+    String toString(Malus malus){
+        boolean feu=true;
+        boolean crever=false;
+        boolean accident=false;
+        int limit=200;
+        return malus.feu + " "+ malus.crever + " " + malus.accident+ " " + malus.limit ;
+    }
+
     // boolean avancement(Cards carte , Players joueur , Plateau plat){
     //     /*
     //         Fonction avancement qui regarde si un joueur peut jouer sa carte , la joue ou la défausse le cas écheant;
@@ -362,13 +372,19 @@ class Main extends Program {
     boolean jouerCarte(Cards cartejoué , Players joueur , Plateau plat){
 
         if(estCarteBorne(cartejoué.nom)){
-            if( !estBloquer(joueur) && reponseBonne(cartejoué , plat)){
+            if(!estBloquer(joueur)){
+                println("Vous etes bloquer !");
+                if(reponseBonne(cartejoué , plat)){
                 avancerDe(joueur , valeurCarte(cartejoué.nom));
+                }else{
+                    println("Réponse est fausse");
+                    return false;
+                }
             }else{
                 return false;
             }
         }else{
-            println("Carte spécial jouer");
+            jouerCarteSpecial(cartejoué, joueur , plat);
         }
         return true;
     }
@@ -379,19 +395,71 @@ class Main extends Program {
     boolean reponseBonne(Cards carte , Plateau plat){
         Question question = plat.questions[(int)(random() * length(plat.questions))+ 1];
         println(question.getQuestion());
-        String input = toLowerCase(readString());
-        return question.goodAnswer(input);
+        String input = removeUnChar(toLowerCase(readString()));
+        return equals(input,question.getReponse());
     }
 
+    String removeUnChar(String msg){
+        String rep = "";
+        for (int i = 0; i < length(msg); i++) {
+            if ((charAt(msg,i) >= 'a' && charAt(msg,i) <= 'z') || (charAt(msg,i) >= '0' && charAt(msg,i) <= '9')) {
+                rep += charAt(msg,i);
+            }
+        }
+        return rep;
+    }
 
+    void jouerCarteSpecial(Cards carte , Players joueur , Plateau plat){
+        if (estUneCarteBonus(carte)) {
+            if (carte.nom == NameCards.ROUES) {
+                joueur.malus.crever = false;
+            }
+            else if (carte.nom == NameCards.FEU_VERT) {
+                joueur.malus.feu = false;
+            }
+            else if (carte.nom == NameCards.NO_LIMIT) {
+                joueur.malus.limit = 200;
+            }
+            else if (carte.nom == NameCards.GARAGE) {
+                joueur.malus.accident = false;
+            }
+        }else{
+            // { NameCards.CREVAISON , NameCards.FEU_ROUGE , NameCards.LIMIT_50  , NameCards.LIMIT_100 , NameCards.ACCIDENT};
+            println("Quel joueur veut tu ciblé avec ta carte malus ?\n >");
+            int choix = readInt();
+            if (carte.nom == NameCards.CREVAISON) {
+                plat.liste_joueurs[choix-1].malus.crever = true;
+            }
+            else if (carte.nom == NameCards.FEU_ROUGE) {
+                plat.liste_joueurs[choix-1].malus.feu = true;
+            }
+            else if (carte.nom == NameCards.LIMIT_50) {
+                plat.liste_joueurs[choix-1].malus.limit = 50;
+            }
+            else if (carte.nom == NameCards.LIMIT_100) {
+                plat.liste_joueurs[choix-1].malus.limit = 100;
+            }
+            else if (carte.nom == NameCards.ACCIDENT) {
+                plat.liste_joueurs[choix-1].malus.accident = true;
+            }
+        }
+    }
+
+    boolean estUneCarteBonus(Cards carte){
+        int i = 0;
+        while (i < length(BONUS) && BONUS[i] != carte.nom) {
+            i ++;
+        }
+        return i != length(BONUS);
+    }
 
     String[] questionReponse(int niveau , String sujet){
         return new String[5];
     }
 
-    boolean contrerMalus(Cards carte,Players joueur){
-        return true;
-    }
+    // boolean contrerMalus(Cards carte,Players joueur){
+    //     return true;
+    // }
 }
 
 
