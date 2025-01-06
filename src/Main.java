@@ -47,13 +47,13 @@ class Main extends Program {
     void start(){
         Plateau plateau = initJeu();
         int joueur_actuel = 0;
-        while (true) {
+        while (!partieFinie(plateau)) {
             clearScreen();
             print(toString(plateau));
             println("Tour du joueur "+(joueur_actuel + 1 ));
             println("Les malus du joueur sont : "+toString(plateau.liste_joueurs[joueur_actuel].malus));
             tourJoueur(plateau.liste_joueurs[joueur_actuel] , plateau);
-            //delay(3000);
+            delay(3000);
             joueur_actuel = (joueur_actuel+1) % length(plateau.liste_joueurs);
         }
     }
@@ -375,10 +375,10 @@ class Main extends Program {
     boolean jouerCarte(Cards cartejoué , Players joueur , Plateau plat){
 
         if(estCarteBorne(cartejoué.nom)){
-            if(!estBloquer(joueur)){
+            if(!estBloquer(joueur) || estLimite(joueur,carte)){
                 println("Vous etes bloquer !");
                 if(reponseBonne(cartejoué , plat)){
-                avancerDe(joueur , valeurCarte(cartejoué.nom));
+                        avancerDe(joueur , valeurCarte(cartejoué.nom));
                 }else{
                     println("Réponse est fausse");
                     return false;
@@ -400,6 +400,9 @@ class Main extends Program {
         println(question.question);
         String input = removeUnChar(toLowerCase(readString()));
         return equals(input,question.reponse);
+    }
+    boolean estLimite(Players joueur , Cards carte){
+        return carte.valeurDeDéplacement > joueur.malus.limit;
     }
 
     String removeUnChar(String msg){
@@ -444,6 +447,8 @@ class Main extends Program {
             }
             else if (carte.nom == NameCards.ACCIDENT) {
                 plat.liste_joueurs[choix-1].malus.accident = true;
+            }else{
+                println("La carte est pas trouvé "+carte.nom);
             }
         }
     }
@@ -463,6 +468,13 @@ class Main extends Program {
     // boolean contrerMalus(Cards carte,Players joueur){
     //     return true;
     // }
+    boolean partieFinie(Plateau p){
+        int i = 0;
+        while (i < length(p.liste_joueurs) && p.liste_joueurs[i].position_Plateau <= 1000) {
+            i++;
+        }
+        return i != length(p.liste_joueurs);
+    }
 }
 
 
