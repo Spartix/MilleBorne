@@ -53,7 +53,7 @@ class Main extends Program {
             println("Tour du joueur "+(joueur_actuel + 1 ));
             println("Les malus du joueur sont : "+toString(plateau.liste_joueurs[joueur_actuel].malus));
             tourJoueur(plateau.liste_joueurs[joueur_actuel] , plateau);
-            delay(3000);
+            //delay(3000);
             joueur_actuel = (joueur_actuel+1) % length(plateau.liste_joueurs);
         }
     }
@@ -64,11 +64,7 @@ class Main extends Program {
         println(toString(joueur.jeu));
         //delay(3000);
         print("numéro de la carte a joué: ");
-        int choix = readInt();
-        choix -= 1;
-        if (choix >= joueur.index_vide) {
-            choix ++;
-        }
+        int choix = readInt() - 1;
         //delay(3000);
         //println("Le choix est "+ choix);
         //delay(3000);
@@ -290,14 +286,21 @@ class Main extends Program {
         return msg;
     }
    
-
+    Question newQuestion(String question , String reponse , int niveau , String sujet){
+        Question quest = new Question();
+        quest.question = question;
+        quest.reponse = reponse;
+        quest.niveau = niveau;
+        quest.sujet = sujet;
+        return quest;
+    }
 
     void initQuestions(Plateau P){
         //saveCSV( new String[][]{{"OUOU"},{"AA"}} , "./ressources/caca.csv");
         CSVFile File = loadCSV("./ressources/questionv1.csv");
         Question[] tabquestion = new Question[rowCount(File)-1];
         for (int i = 1; i < length(tabquestion) ; i++) {
-            tabquestion[i] = new Question(getCell(File,i,0) , getCell(File,i,1) , 1 , getCell(File,i,2));
+            tabquestion[i] = newQuestion(getCell(File,i,0) , getCell(File,i,1) , 1 , getCell(File,i,2));
            // println(getCell(File,i,0));
         }
         P.questions = tabquestion;
@@ -337,7 +340,7 @@ class Main extends Program {
     String toString(Question[] quest){
         String msg = "";
         for (int i = 1; i < length(quest); i++) {
-            msg += quest[i].getQuestion() + "\n";
+            msg += quest[i].question + "\n";
         }
         return msg;
     }
@@ -394,9 +397,9 @@ class Main extends Program {
     }
     boolean reponseBonne(Cards carte , Plateau plat){
         Question question = plat.questions[(int)(random() * length(plat.questions))+ 1];
-        println(question.getQuestion());
+        println(question.question);
         String input = removeUnChar(toLowerCase(readString()));
-        return equals(input,question.getReponse());
+        return equals(input,question.reponse);
     }
 
     String removeUnChar(String msg){
