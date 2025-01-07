@@ -20,3 +20,15 @@ Cards a name + value d'avancement + is avancement card
 
  ______
 |__🚓__|
+
+
+
+
++-------------------+
+|      Borne        |
+|    +---------+    |
+|    | 100 km  |    |
+|    +---------+    |
+|       Cartes      |
+|    Mille Bornes   |
++-------------------+

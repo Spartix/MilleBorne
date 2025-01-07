@@ -3,11 +3,10 @@ class Main extends Program {
 
     // les voitures en String car en Char ils n existent pas
     final String[] voitures_dispo = new String[]{"🚗","🚙","🚕","🚐","🚓"};
-
+    // Delay d affichage de chaque carac
+    final int DELAY = 25;
     // noms des cartes , leur associations en valeur et leur associations en nombre;
-
-    // METTRE EN FINAL ET METTRE EN MAJ
-    final NameCards[] CARTES_BORNE = new NameCards[]{ NameCards.BORNES_50,  NameCards.BORNES_100 , NameCards.BORNES_150 , NameCards.BORNES_200 , NameCards.JOKER};
+    final NameCards[] CARTES_BORNE = new NameCards[]{ NameCards.BORNES_50,  NameCards.BORNES_100 , NameCards.BORNES_150 , NameCards.BORNES_200};
     final NameCards[] MALUS = new NameCards[] { NameCards.CREVAISON , NameCards.FEU_ROUGE , NameCards.LIMIT_50  , NameCards.LIMIT_100 , NameCards.ACCIDENT};
     final NameCards[] BONUS = new NameCards[]{ NameCards.ROUES  , NameCards.FEU_VERT , NameCards.NO_LIMIT , NameCards.GARAGE};
     // nb de cartes
@@ -17,6 +16,8 @@ class Main extends Program {
 
     void algorithm() {
         //enableKeyTypedInConsole(true);
+        clearScreen();
+        welcome();
         start();
     }
     
@@ -26,8 +27,8 @@ class Main extends Program {
         while (!partieFinie(plateau)) {
             clearScreen();
             print(toString(plateau));
-            println("Tour du joueur "+(joueur_actuel + 1 ));
-            println("Les malus du joueur sont : "+toString(plateau.liste_joueurs[joueur_actuel].malus));
+            println("Tour du joueur "+(joueur_actuel + 1 )+"\n");
+            println("Les malus du joueur sont : "+toString(plateau.liste_joueurs[joueur_actuel].malus)+"\n");
             tourJoueur(plateau.liste_joueurs[joueur_actuel] , plateau);
             delay(3000);
             joueur_actuel = (joueur_actuel+1) % length(plateau.liste_joueurs);
@@ -297,6 +298,11 @@ class Main extends Program {
         return msg;
     }
 
+    String toString(Cards carte){
+        
+    }
+
+
     String toString(String[] voitures){
         /* function qui retourne la liste des voiture en string;*/
         String msg = "";
@@ -323,11 +329,22 @@ class Main extends Program {
     }
 
     String toString(Malus malus){
+        String msg = "";
         boolean feu=true;
         boolean crever=false;
         boolean accident=false;
         int limit=200;
-        return malus.feu + " "+ malus.crever + " " + malus.accident+ " " + malus.limit ;
+        if (malus.feu) {
+            msg += "Feu Rouge, ";
+        }
+        if (malus.crever) {
+            msg += "Roue Crevée, ";
+        }
+        if (malus.accident) {
+            msg += "Accident, ";
+        }
+        msg += "Limité à "+ malus.limit + "KM";
+        return msg ;
     }
 
 
@@ -426,11 +443,6 @@ class Main extends Program {
         return new String[5];
     }
 
-<<<<<<< HEAD;
-    // boolean contrerMalus(Cards carte,Players joueur){
-    //     return true;
-    // }
-=======
     boolean partieFinie(Plateau p){
         int i = 0;
         while (i < length(p.liste_joueurs) && p.liste_joueurs[i].position_Plateau <= 1000) {
@@ -438,5 +450,18 @@ class Main extends Program {
         }
         return i != length(p.liste_joueurs);
     }
->>>>>>> 39af29d59b47b82f3ec2c989368bb460c17a6c4c;
+    void welcome() {
+        delayPrint("Bienvenue dans le jeu du Mille Bornes !\n",DELAY);
+        delayPrint("C'est un jeu de cartes où le but est de parcourir 1000 kilomètres en premier 🚗.\n",DELAY);
+        delayPrint("Vous pouvez utiliser des malus pour mettre des bâtons dans les roues de vos adversaires 🚧, comme des crevaisons ou des accidents.\n",DELAY);
+        delayPrint("Les bonus vous permettent de contrer les malus que vous avez subis 💪.\n",DELAY);
+        delayPrint("Attention, il y a aussi une limite de vitesse qui peut être imposée et qui restreint votre progression 🚦.\n",DELAY);
+        delayPrint("Planifiez bien vos coups et que le meilleur gagne ! 🎉\n",DELAY);
+    }
+    void delayPrint(String msg, int delay){
+        for (int i = 0; i < length(msg); i++) {
+            print(charAt(msg,i));
+            delay(delay);
+        }
+    }
 }
