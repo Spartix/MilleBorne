@@ -15,30 +15,6 @@ class Main extends Program {
     final int nombre_cartes_malus = 100;
 
 
-
-    // int position_fleche = 0;
-    // void keyTypedInConsole(char key) {
-    //     //println("Vous avez appuyé sur : " + key+ " (pressez 'q' pour quitter)");
-    //     switch (key) {
-    //         case ANSI_UP:
-    //             position_fleche += 1;
-    //             printFleche(position_fleche);
-    //             break;
-    //         case 'q' :
-    //             println("Ok, au revoir ...");
-    //             break;
-    //     }
-        
-    // }
-    // void printFleche(int pos){
-    //     for (int i = 0; i < pos; i++) {
-    //         print(" ");
-    //     }
-    //     print("^");
-    // }
-
-
-
     void algorithm() {
         //enableKeyTypedInConsole(true);
         start();
@@ -47,7 +23,7 @@ class Main extends Program {
     void start(){
         Plateau plateau = initJeu();
         int joueur_actuel = 0;
-        while (true) {
+        while (!partieFinie(plateau)) {
             clearScreen();
             print(toString(plateau));
             println("Tour du joueur "+(joueur_actuel + 1 ));
@@ -63,12 +39,7 @@ class Main extends Program {
         joueur.jeu[joueur.index_vide] =  piocher(plat);
         println(toString(joueur.jeu));
         //delay(3000);
-        print("numéro de la carte a joué: ");
-        int choix = readInt();
-        choix -= 1;
-        if (choix >= joueur.index_vide) {
-            choix ++;
-        }
+        int choix = saisir("numéro de la carte a joué: ",1,7) -1;
         //delay(3000);
         //println("Le choix est "+ choix);
         //delay(3000);
@@ -89,7 +60,7 @@ class Main extends Program {
         Plateau plateau = newPlateau(nbJoueurs);
         initPioche(plateau);
         initQuestions(plateau);
-        println(toString(plateau.questions));
+        //println(toString(plateau.questions));
         initJoueurs(plateau);
         distribuerCartes(plateau);
         return plateau;
@@ -227,7 +198,7 @@ class Main extends Program {
         */
             print(message);
             String saisie = readString();
-            while ( !onlyNumbers(saisie) || stringToInt(saisie) < min || stringToInt(saisie) > max) {
+            while (length(saisie) <= 0 || !onlyNumbers(saisie) || stringToInt(saisie) < min || stringToInt(saisie) > max){
                 print("Nombre entré invalide (doit être entre " + min + " et " + max+")");
                 saisie = readString();
             }
@@ -290,17 +261,26 @@ class Main extends Program {
         return msg;
     }
    
-
+    Question newQuestion(String question , String reponse , int niveau , String sujet){
+        Question quest = new Question();
+        quest.question = question;
+        quest.reponse = reponse;
+        quest.niveau = niveau;
+        quest.sujet = sujet;
+        return quest;
+    }
 
     void initQuestions(Plateau P){
         //saveCSV( new String[][]{{"OUOU"},{"AA"}} , "./ressources/caca.csv");
         CSVFile File = loadCSV("./ressources/questionv1.csv");
-        Question[] tabquestion = new Question[rowCount(File)-1];
-        for (int i = 1; i < length(tabquestion) ; i++) {
-            tabquestion[i] = new Question(getCell(File,i,0) , getCell(File,i,1) , 1 , getCell(File,i,2));
-           // println(getCell(File,i,0));
+        Question[] tabquestion = new Question[rowCount(File) -1];
+        println("Il y a "+length(tabquestion));
+        for (int i = 0; i < length(tabquestion) ; i++) {
+            tabquestion[i] = newQuestion(getCell(File,i+1,0) , getCell(File,i+1,1) , 1 , getCell(File,i+1,2));
+            println(getCell(File,i+1,0));
         }
         P.questions = tabquestion;
+
     }
 
 
@@ -336,8 +316,8 @@ class Main extends Program {
 
     String toString(Question[] quest){
         String msg = "";
-        for (int i = 1; i < length(quest); i++) {
-            msg += quest[i].getQuestion() + "\n";
+        for (int i = 0; i < length(quest); i++) {
+            msg += quest[i].question + "\n";
         }
         return msg;
     }
@@ -350,19 +330,6 @@ class Main extends Program {
         return malus.feu + " "+ malus.crever + " " + malus.accident+ " " + malus.limit ;
     }
 
-    // boolean avancement(Cards carte , Players joueur , Plateau plat){
-    //     /*
-    //         Fonction avancement qui regarde si un joueur peut jouer sa carte , la joue ou la défausse le cas écheant;
-    //         carte (Cards) : Carte joué par le joueur;
-    //         joueur (Players) : Object joueur qui joue la carte;
-    //         return (boolean) : la carte a été jouer ou non (défaussé si non joué);
-    //      */
-    //     if(!estBloquer(joueur)){
-    //         return jouerCarte(carte, joueur , plat);
-    //     }else{
-    //         return contrerMalus(carte,joueur);
-    //     }
-    // }
 
     boolean estBloquer(Players joueur){
         return joueur.malus.feu || joueur.malus.crever || joueur.malus.accident;
@@ -372,10 +339,9 @@ class Main extends Program {
     boolean jouerCarte(Cards cartejoué , Players joueur , Plateau plat){
 
         if(estCarteBorne(cartejoué.nom)){
-            if(!estBloquer(joueur)){
-                println("Vous etes bloquer !");
+            if(!estBloquer(joueur) && !estLimite(joueur,cartejoué)){
                 if(reponseBonne(cartejoué , plat)){
-                avancerDe(joueur , valeurCarte(cartejoué.nom));
+                        avancerDe(joueur , valeurCarte(cartejoué.nom));
                 }else{
                     println("Réponse est fausse");
                     return false;
@@ -393,10 +359,13 @@ class Main extends Program {
         joueur.position_Plateau += value;
     }
     boolean reponseBonne(Cards carte , Plateau plat){
-        Question question = plat.questions[(int)(random() * length(plat.questions))+ 1];
-        println(question.getQuestion());
+        Question question = plat.questions[(int)(random() * length(plat.questions))];
+        println(question.question);
         String input = removeUnChar(toLowerCase(readString()));
-        return equals(input,question.getReponse());
+        return equals(input,question.reponse);
+    }
+    boolean estLimite(Players joueur , Cards carte){
+        return carte.valeurDeDéplacement > joueur.malus.limit;
     }
 
     String removeUnChar(String msg){
@@ -424,9 +393,7 @@ class Main extends Program {
                 joueur.malus.accident = false;
             }
         }else{
-            // { NameCards.CREVAISON , NameCards.FEU_ROUGE , NameCards.LIMIT_50  , NameCards.LIMIT_100 , NameCards.ACCIDENT};
-            println("Quel joueur veut tu ciblé avec ta carte malus ?\n >");
-            int choix = readInt();
+            int choix = saisir("Quel joueur veut tu ciblé avec ta carte malus ?\n >",1,length(plat.liste_joueurs));
             if (carte.nom == NameCards.CREVAISON) {
                 plat.liste_joueurs[choix-1].malus.crever = true;
             }
@@ -441,6 +408,8 @@ class Main extends Program {
             }
             else if (carte.nom == NameCards.ACCIDENT) {
                 plat.liste_joueurs[choix-1].malus.accident = true;
+            }else{
+                println("La carte est pas trouvé "+carte.nom);
             }
         }
     }
@@ -457,7 +426,17 @@ class Main extends Program {
         return new String[5];
     }
 
+<<<<<<< HEAD;
     // boolean contrerMalus(Cards carte,Players joueur){
     //     return true;
     // }
+=======
+    boolean partieFinie(Plateau p){
+        int i = 0;
+        while (i < length(p.liste_joueurs) && p.liste_joueurs[i].position_Plateau <= 1000) {
+            i++;
+        }
+        return i != length(p.liste_joueurs);
+    }
+>>>>>>> 39af29d59b47b82f3ec2c989368bb460c17a6c4c;
 }
