@@ -27,7 +27,7 @@ class Main extends Program {
         while (!partieFinie(plateau)) {
             clearScreen();
             print(toString(plateau));
-            println("Tour du joueur numéro"+(joueur_actuel + 1 )+ plateau.liste_joueurs[joueur_actuel].pseudo +"\n");
+            println("Tour du joueur numéro "+(joueur_actuel + 1 )+ ' '+ plateau.liste_joueurs[joueur_actuel].pseudo +"\n");
             println("Les malus du joueur sont : "+toString(plateau.liste_joueurs[joueur_actuel].malus)+"\n");
             tourJoueur(plateau.liste_joueurs[joueur_actuel] , plateau);
             delay(3000);
@@ -292,15 +292,27 @@ class Main extends Program {
     // Les fonctions toString des diffenrents nouveaux type
 
     String toString(Cards[] paquet){
-        String msg = "";
+        String[] msg = new String[6];
         for (int i = 0; i < length(paquet); i++) {
             if(paquet[i] != null){
-                msg += toString(paquet[i],i+1);
+                msg[i] = toString(paquet[i],i+1);
             }
         }
         return msg;
     }
-
+    String[] toString(String msg){
+        //fonction qui transforme un de string en un tab de String. Chaque entrée est une ligne de la chaine
+        int nb_retour = 0;
+        String[] tab = new String[length(msg)];
+        for (int i = 0; i < length(msg); i++) {
+            if(charAt(msg[i]) == '\n'){
+                nb_retour += 1;
+            }else{
+                tab[nb_retour] += charAt(msg,i);
+            }
+        }
+        return tab;
+    }
     String toString(Cards carte, int numero){
         String msg = "+-------------------+\n";
         if(isBorne(carte)){
