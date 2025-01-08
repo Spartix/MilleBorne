@@ -27,7 +27,7 @@ class Main extends Program {
         while (!partieFinie(plateau)) {
             clearScreen();
             print(toString(plateau));
-            println("Tour du joueur "+(joueur_actuel + 1 )+"\n");
+            println("Tour du joueur numéro"+(joueur_actuel + 1 )+ plateau.liste_joueurs[joueur_actuel].pseudo +"\n");
             println("Les malus du joueur sont : "+toString(plateau.liste_joueurs[joueur_actuel].malus)+"\n");
             tourJoueur(plateau.liste_joueurs[joueur_actuel] , plateau);
             delay(3000);
@@ -134,6 +134,9 @@ class Main extends Program {
     }
     boolean estCarteBorne(NameCards nom){
         return valeurCarte(nom) > 0;
+    }
+    boolean isBorne(Cards carte){
+        return carte.borne_carte;
     }
     void initJoueurs(Plateau plat){
         // fonction qui demande les infos de chaque joueurs
@@ -292,19 +295,36 @@ class Main extends Program {
         String msg = "";
         for (int i = 0; i < length(paquet); i++) {
             if(paquet[i] != null){
-                msg += paquet[i].nom +" ";
+                msg += toString(paquet[i],i+1);
             }
         }
         return msg;
     }
 
-    String toString(Cards carte){
-        
+    String toString(Cards carte, int numero){
+        String msg = "+-------------------+\n";
+        if(isBorne(carte)){
+            msg = msg + "|      Borne        |\n";
+        }else if(estUneCarteBonus(carte)){
+            msg = msg + "|      Bonus        |\n";
+        }else {
+           msg = msg + "|      Malus        |\n";
+        }
+        msg = msg + "|    +---------+    |\n|    |    "+numero+"    |    |\n|    +---------+    |\n|       Carte       |\n|";
+        int space = 19 - length(carte.nom +"");
+        for (int i = 0; i <= space; i++) {
+            if (space/2 == i) {
+                msg += carte.nom;
+            }else {
+                msg += " ";
+            }
+        }
+        return msg + "|\n+-------------------+\n";
     }
 
 
     String toString(String[] voitures){
-        /* function qui retourne la liste des voiture en string;*/
+        /* function qui retourne la liste des voiture en string*/
         String msg = "";
         for (int i = 0; i < length(voitures); i++) {
             msg = msg + voitures[i] + " ";

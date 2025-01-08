@@ -25,10 +25,10 @@ Cards a name + value d'avancement + is avancement card
 
 
 +-------------------+
-|      Borne        |
+|      Malus        |
 |    +---------+    |
-|    | 100 km  |    |
+|    |    |    |    |
 |    +---------+    |
-|       Cartes      |
-|    Mille Bornes   |
+|       Carte       |
+|    100_BORNES     |
 +-------------------+
