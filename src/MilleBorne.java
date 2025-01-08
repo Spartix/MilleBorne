@@ -1,5 +1,5 @@
 import extensions.*;  
-class Main extends Program {
+class MilleBorne extends Program {
 
     // les voitures en String car en Char ils n existent pas
     final String[] voitures_dispo = new String[]{"🚗","🚙","🚕","🚐","🚓"};
@@ -17,7 +17,7 @@ class Main extends Program {
     void algorithm() {
         //enableKeyTypedInConsole(true);
         clearScreen();
-        welcome();
+        //welcome();
         start();
     }
     
@@ -30,7 +30,7 @@ class Main extends Program {
             println("Tour du joueur numéro "+(joueur_actuel + 1 )+ ' '+ plateau.liste_joueurs[joueur_actuel].pseudo +"\n");
             println("Les malus du joueur sont : "+toString(plateau.liste_joueurs[joueur_actuel].malus)+"\n");
             tourJoueur(plateau.liste_joueurs[joueur_actuel] , plateau);
-            delay(3000);
+            //delay(3000);
             joueur_actuel = (joueur_actuel+1) % length(plateau.liste_joueurs);
         }
     }
@@ -119,7 +119,7 @@ class Main extends Program {
         //fonction pour creer un paquet de carte Cards[] à partir d un tableau de NameCards (nom des cartes)
         Cards[] paquet = new Cards[length(noms)];
         for (int i = 0; i < length(noms); i++) {
-            paquet[i] = newCards(noms[i],valeurCarte(noms[i]),estCarteBorne(noms[i]));
+            paquet[i] = newCards(noms[i],valeurCarte(noms[i]),estCarteBorne(noms[i]),valeurDifficulte(noms[i]));
         }
         return paquet;
     }
@@ -128,6 +128,14 @@ class Main extends Program {
         for (int i = 0; i < length(CARTES_BORNE); i++) {
             if(nom == CARTES_BORNE[i]){
                 return (i+1) * 50;
+            }
+        }
+        return 0;
+    }
+    int valeurDifficulte(NameCards nom){
+        for (int i = 0; i < length(CARTES_BORNE); i++) {
+            if(nom == CARTES_BORNE[i]){
+                return i+1;
             }
         }
         return 0;
@@ -175,11 +183,12 @@ class Main extends Program {
             return plat;
     }
 
-    Cards newCards(NameCards name , int value, boolean borne_carte){
+    Cards newCards(NameCards name , int value, boolean borne_carte, int difficulte){
         Cards carte = new Cards();
         carte.nom = name;
         carte.valeurDeDéplacement = value;
         carte.borne_carte = borne_carte;
+        carte.difficulte = difficulte;
         return carte;
     }
 
@@ -220,13 +229,13 @@ class Main extends Program {
     void testGenerateRoute(){
         Players p = newPlayers(1,"J1","🚗");
         p.position_Plateau = 1000;
-        assertEquals(" __________________________________________________\n|                                                  |\n|                                                🚗|\n|__________________________________________________|",generateRoute(p));
+        assertEquals("   __________________________________________________\n  |                                                  |\n  |                                                🚗|\n  |__________________________________________________|",generateRoute(p));
         Players p2 = newPlayers(1,"J2","🚙");
         p2.position_Plateau = 0;
-        assertEquals(" __________________________________________________\n|                                                  |\n|🚙                                                |\n|__________________________________________________|",generateRoute(p2));
+        assertEquals("   __________________________________________________\n  |                                                  |\n  |🚙                                                |\n  |__________________________________________________|",generateRoute(p2));
         Players p3 = newPlayers(1,"J3","🚐");
         p3.position_Plateau = 485;
-        assertEquals(" __________________________________________________\n|                                                  |\n|                      🚐                          |\n|__________________________________________________|",generateRoute(p3));
+        assertEquals("   __________________________________________________\n  |                                                  |\n  |                      🚐                          |\n  |__________________________________________________|",generateRoute(p3));
     }
 
     String generateRoute(Players joueur) {
@@ -292,27 +301,81 @@ class Main extends Program {
     // Les fonctions toString des diffenrents nouveaux type
 
     String toString(Cards[] paquet){
-        String[] msg = new String[6];
+        String[][] msg = new String[7][8]; // 7 cartes qui prennent 7 lignes;
+        //String msg2 = "";
         for (int i = 0; i < length(paquet); i++) {
             if(paquet[i] != null){
-                msg[i] = toString(paquet[i],i+1);
+                //msg[i] = stringToArray(toString(paquet[i],i+1));
+                msg[i] = stringToArray(toString(paquet[i],i+1));
             }
+        }
+        return toString(msg);
+    }
+    void testStringToArray(){
+        String[][] tab1 = new String[][]{{"1erl","2emel"},{"2emecarte","2emecarte"}};
+        String[][] tab2 = new String[][]{stringToArray("1erl\n2emel"),stringToArray("2emecarte\n2emecarte")};
+        assertArrayEquals(tab1[1],tab2[1]);
+    }
+    String toString(String[][] tab_double) {
+        String msg = "";
+        for (int u = 0; u < length(tab_double[0]); u++) {
+            for (int i = 0; i < length(tab_double); i++) { 
+                msg += tab_double[i][u] + " "; 
+            }
+            msg += "\n";
         }
         return msg;
     }
-    String[] toString(String msg){
+
+    void testToString(){
+
+    }
+
+    String[] stringToArray(String msg){
         //fonction qui transforme un de string en un tab de String. Chaque entrée est une ligne de la chaine
         int nb_retour = 0;
         String[] tab = new String[length(msg)];
         for (int i = 0; i < length(msg); i++) {
-            if(charAt(msg[i]) == '\n'){
+            if(charAt(msg,i) == '\n'){
                 nb_retour += 1;
             }else{
-                tab[nb_retour] += charAt(msg,i);
+                if (tab[nb_retour] == null) {
+                    tab[nb_retour] = charAt(msg,i) +"";
+                }else{
+                    tab[nb_retour] = tab[nb_retour] + charAt(msg,i);
+                }
+                
             }
+        }
+        return slice(tab);
+    }
+    void testSlice(){
+        String[] tab = new String[]{"Bjr","Arv","Bg",null,null,null};
+        tab = slice(tab);
+        assertArrayEquals(tab, new String[]{"Bjr","Arv","Bg"});
+    }
+    String[] slice(String[] tableau){
+        /* Fonction qui renvoi un tableau sans les valeur null en fin de tab;
+            (String[]) tableau: tableau à decouper;
+            (int) start: debut du decoupage;
+            (int) stop: fin du decoupage (exclu);
+        */
+        int nb = 0;
+        for (int i = 0; i < length(tableau); i++) {
+            if (tableau[i] == null){
+                nb ++;
+            }
+        }
+        String[] tab = new String[length(tableau)-nb];
+        for (int i = 0; i < length(tableau)-nb; i++) {
+            tab[i] = tableau[i];
         }
         return tab;
     }
+
+
+
+
     String toString(Cards carte, int numero){
         String msg = "+-------------------+\n";
         if(isBorne(carte)){
@@ -322,7 +385,7 @@ class Main extends Program {
         }else {
            msg = msg + "|      Malus        |\n";
         }
-        msg = msg + "|    +---------+    |\n|    |    "+numero+"    |    |\n|    +---------+    |\n|       Carte       |\n|";
+        msg = msg + "|    +---------+    |\n|    |   n°"+numero+"   |    |\n|    +---------+    |\n|       Carte       |\n|";
         int space = 19 - length(carte.nom +"");
         for (int i = 0; i <= space; i++) {
             if (space/2 == i) {
@@ -331,7 +394,7 @@ class Main extends Program {
                 msg += " ";
             }
         }
-        return msg + "|\n+-------------------+\n";
+        return msg + "|\n+-------------------+";
     }
 
 
@@ -409,6 +472,7 @@ class Main extends Program {
     }
     boolean reponseBonne(Cards carte , Plateau plat){
         Question question = plat.questions[(int)(random() * length(plat.questions))];
+        println("La diffculté pour la carte "+carte.nom +" est de "+ carte.difficulte);
         println(question.question);
         String input = removeUnChar(toLowerCase(readString()));
         return equals(input,question.reponse);
