@@ -30,7 +30,7 @@ class MilleBorne extends Program {
             println("Tour du joueur numéro "+(joueur_actuel + 1 )+ ' '+ plateau.liste_joueurs[joueur_actuel].pseudo +"\n");
             println("Les malus du joueur sont : "+toString(plateau.liste_joueurs[joueur_actuel].malus)+"\n");
             tourJoueur(plateau.liste_joueurs[joueur_actuel] , plateau);
-            //delay(3000);
+            delay(3000);
             joueur_actuel = (joueur_actuel+1) % length(plateau.liste_joueurs);
         }
     }
@@ -108,6 +108,15 @@ class MilleBorne extends Program {
 
     void melanger(Cards[] paquet){
         // fonction qui permet de mélanger un paquet de carte donné
+        for (int i = 0; i < length(paquet); i++) {
+            int index_choix = (int) (random() * length(paquet));
+            Cards carte_choisi = paquet[index_choix];
+            paquet[index_choix] = paquet[i];
+            paquet[i] = carte_choisi;
+        }
+    }
+    void melanger(Question[] paquet){
+        // fonction qui permet de mélanger un paquet de question donné
         for (int i = 0; i < length(paquet); i++) {
             int index_choix = (int) (random() * length(paquet));
             Cards carte_choisi = paquet[index_choix];
@@ -285,15 +294,16 @@ class MilleBorne extends Program {
 
     void initQuestions(Plateau P){
         //saveCSV( new String[][]{{"OUOU"},{"AA"}} , "./ressources/caca.csv");
-        CSVFile File = loadCSV("./ressources/questionv1.csv");
-        Question[] tabquestion = new Question[rowCount(File) -1];
-        println("Il y a "+length(tabquestion));
-        for (int i = 0; i < length(tabquestion) ; i++) {
-            tabquestion[i] = newQuestion(getCell(File,i+1,0) , getCell(File,i+1,1) , 1 , getCell(File,i+1,2));
-            println(getCell(File,i+1,0));
+        CSVFile[] file = new CSVFile[]{loadCSV("./ressources/questionv1.csv"),loadCSV("./ressources/questionv2.csv"),loadCSV("./ressources/questionv3.csv"),loadCSV("./ressources/questionv4.csv")};
+        Question[] tabquestion = new Question[rowCount(file[0]) -1 + rowCount(file[1]) -1 + rowCount(file[2]) -1 + rowCount(file[3]) -1];
+        for (int idx = 0; idx < length(File); i++) {
+            //println("Il y a "+length(tabquestion));
+            for (int i = 0; i < length(tabquestion) ; i++) {
+                tabquestion[i] = newQuestion(getCell(file[idx],i+1,0) , getCell(file[idx],i+1,1) , 1 , getCell(file[idx],i+1,2));
+                println(getCell(file[idx],i+1,0));
+            }
+            P.questions = tabquestion;
         }
-        P.questions = tabquestion;
-
     }
 
 
