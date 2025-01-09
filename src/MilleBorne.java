@@ -119,7 +119,7 @@ class MilleBorne extends Program {
         // fonction qui permet de mélanger un paquet de question donné
         for (int i = 0; i < length(paquet); i++) {
             int index_choix = (int) (random() * length(paquet));
-            Cards carte_choisi = paquet[index_choix];
+            Question carte_choisi = paquet[index_choix];
             paquet[index_choix] = paquet[i];
             paquet[i] = carte_choisi;
         }
@@ -295,15 +295,20 @@ class MilleBorne extends Program {
     void initQuestions(Plateau P){
         //saveCSV( new String[][]{{"OUOU"},{"AA"}} , "./ressources/caca.csv");
         CSVFile[] file = new CSVFile[]{loadCSV("./ressources/questionv1.csv"),loadCSV("./ressources/questionv2.csv"),loadCSV("./ressources/questionv3.csv"),loadCSV("./ressources/questionv4.csv")};
-        Question[] tabquestion = new Question[rowCount(file[0]) -1 + rowCount(file[1]) -1 + rowCount(file[2]) -1 + rowCount(file[3]) -1];
-        for (int idx = 0; idx < length(File); i++) {
+        int rcount = rowCount(file[0]) + rowCount(file[1]) + rowCount(file[2]) + rowCount(file[3]) -4;
+        println("J'ai compter "+rcount);
+        Question[] tabquestion = new Question[rowCount(file[0]) + rowCount(file[1]) + rowCount(file[2]) + rowCount(file[3]) -4];
+        int idx_tab = 0;
+        for (int idx = 0; idx < length(file); idx++) {
             //println("Il y a "+length(tabquestion));
-            for (int i = 0; i < length(tabquestion) ; i++) {
-                tabquestion[i] = newQuestion(getCell(file[idx],i+1,0) , getCell(file[idx],i+1,1) , 1 , getCell(file[idx],i+1,2));
+            for (int i = 0; i < rowCount(file[idx])-1 ; i++) {
+                println(file[idx]);
+                tabquestion[idx_tab] = newQuestion(getCell(file[idx],i+1,0) , getCell(file[idx],i+1,1) , 1 , getCell(file[idx],i+1,2));
+                idx_tab ++;
                 println(getCell(file[idx],i+1,0));
             }
-            P.questions = tabquestion;
         }
+        P.questions = tabquestion;
     }
 
 
