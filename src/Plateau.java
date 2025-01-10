@@ -6,5 +6,5 @@ class Plateau{
     Cards[] pioche;
     int nb_cartes_pioche=0;
     Players[] liste_joueurs;
-    Question[] questions;
+    Question[][] questions;
 }

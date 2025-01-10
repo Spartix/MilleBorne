@@ -12,12 +12,18 @@ class MilleBorne extends Program {
     // nb de cartes
     final int nombre_CARTES_BORNEs = 35;
     final int nombre_cartes_malus = 100;
-
+    final String RESET = "\033[0m";
+    final String ROUGE = "\033[31m";
+    final String VERT = "\033[32m";
+    final String JAUNE = "\033[33m";
+    final String BLEU = "\033[34m";
+    final String MAGENTA = "\033[35m";
+    final String CYAN = "\033[36m";
 
     void algorithm() {
         //enableKeyTypedInConsole(true);
         clearScreen();
-        //welcome();
+        welcome();
         start();
     }
     
@@ -30,12 +36,19 @@ class MilleBorne extends Program {
             println("Tour du joueur numéro "+(joueur_actuel + 1 )+ ' '+ plateau.liste_joueurs[joueur_actuel].pseudo +"\n");
             println("Les malus du joueur sont : "+toString(plateau.liste_joueurs[joueur_actuel].malus)+"\n");
             tourJoueur(plateau.liste_joueurs[joueur_actuel] , plateau);
-            delay(3000);
+            //delay(3000);
             joueur_actuel = (joueur_actuel+1) % length(plateau.liste_joueurs);
         }
+        println("GG le joueur"+ getWinner(plateau) + " a gagné");
     }
 
-
+    String getWinner(Plateau plat){
+        int i = 0;
+        while (i < length(plat.liste_joueurs) && plat.liste_joueurs[i].position_Plateau >= 1000) {
+            i ++;
+        }
+        return plat.liste_joueurs[i].pseudo;
+    }
     void tourJoueur(Players joueur , Plateau plat){
         joueur.jeu[joueur.index_vide] =  piocher(plat);
         println(toString(joueur.jeu));
@@ -47,9 +60,9 @@ class MilleBorne extends Program {
         println("la carte joué est "+joueur.jeu[choix].nom);
         //delay(3000);
         if(jouerCarte(joueur.jeu[choix] , joueur , plat)){
-            println("La carte est joué avec success");
+            delayPrint("La carte est joué avec success\n",DELAY+10);
         }else{
-            println("la carte a été defaussé");
+            delayPrint("la carte a été defaussé\n",DELAY+10);
         }
         // vider la case de la carte
         joueur.index_vide = choix;
@@ -295,16 +308,12 @@ class MilleBorne extends Program {
     void initQuestions(Plateau P){
         //saveCSV( new String[][]{{"OUOU"},{"AA"}} , "./ressources/caca.csv");
         CSVFile[] file = new CSVFile[]{loadCSV("./ressources/questionv1.csv"),loadCSV("./ressources/questionv2.csv"),loadCSV("./ressources/questionv3.csv"),loadCSV("./ressources/questionv4.csv")};
-        int rcount = rowCount(file[0]) + rowCount(file[1]) + rowCount(file[2]) + rowCount(file[3]) -4;
-        println("J'ai compter "+rcount);
-        Question[] tabquestion = new Question[rowCount(file[0]) + rowCount(file[1]) + rowCount(file[2]) + rowCount(file[3]) -4];
-        int idx_tab = 0;
+        Question[][] tabquestion = new Question[length(file)][];
         for (int idx = 0; idx < length(file); idx++) {
             //println("Il y a "+length(tabquestion));
+            tabquestion[idx] = new Question[rowCount(file[idx])];
             for (int i = 0; i < rowCount(file[idx])-1 ; i++) {
-                println(file[idx]);
-                tabquestion[idx_tab] = newQuestion(getCell(file[idx],i+1,0) , getCell(file[idx],i+1,1) , 1 , getCell(file[idx],i+1,2));
-                idx_tab ++;
+                tabquestion[idx][i] = newQuestion(getCell(file[idx],i+1,0) , getCell(file[idx],i+1,1) , 1 , getCell(file[idx],i+1,2));
                 println(getCell(file[idx],i+1,0));
             }
         }
@@ -486,7 +495,8 @@ class MilleBorne extends Program {
         joueur.position_Plateau += value;
     }
     boolean reponseBonne(Cards carte , Plateau plat){
-        Question question = plat.questions[(int)(random() * length(plat.questions))];
+        int niveau = carte.difficulte - 1;
+        Question question = plat.questions[niveau][(int)(random() * (length(plat.questions[niveau])/4))];
         println("La diffculté pour la carte "+carte.nom +" est de "+ carte.difficulte);
         println(question.question);
         String input = removeUnChar(toLowerCase(readString()));
@@ -562,10 +572,10 @@ class MilleBorne extends Program {
         return i != length(p.liste_joueurs);
     }
     void welcome() {
-        delayPrint("Bienvenue dans le jeu du Mille Bornes !\n",DELAY);
-        delayPrint("C'est un jeu de cartes où le but est de parcourir 1000 kilomètres en premier 🚗.\n",DELAY);
-        delayPrint("Vous pouvez utiliser des malus pour mettre des bâtons dans les roues de vos adversaires 🚧, comme des crevaisons ou des accidents.\n",DELAY);
-        delayPrint("Les bonus vous permettent de contrer les malus que vous avez subis 💪.\n",DELAY);
+        delayPrint(VERT+"Bienvenue dans le jeu du Mille Bornes !\n"+RESET,DELAY);
+        delayPrint(BLEU+"C'est un jeu de cartes où le but est de parcourir 1000 kilomètres en premier 🚗.\n"+RESET,DELAY);
+        delayPrint(JAUNE+"Vous pouvez utiliser des malus pour mettre des bâtons dans les roues de vos adversaires 🚧, comme des crevaisons ou des accidents.\n"+RESET,DELAY);
+        delayPrint(VERT+"Les bonus vous permettent de contrer les malus que vous avez subis 💪.\n"+RESET,DELAY);
         delayPrint("Attention, il y a aussi une limite de vitesse qui peut être imposée et qui restreint votre progression 🚦.\n",DELAY);
         delayPrint("Planifiez bien vos coups et que le meilleur gagne ! 🎉\n",DELAY);
     }
