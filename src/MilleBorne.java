@@ -32,7 +32,7 @@ class MilleBorne extends Program {
         int joueur_actuel = 0;
         while (!partieFinie(plateau)) {
             clearScreen();
-            print(toString(plateau));
+            print(toString(plateau,joueur_actuel));
             println("Tour du joueur numéro "+(joueur_actuel + 1 )+ ' '+ plateau.liste_joueurs[joueur_actuel].pseudo +"\n");
             println("Les malus du joueur sont : "+toString(plateau.liste_joueurs[joueur_actuel].malus)+"\n");
             tourJoueur(plateau.liste_joueurs[joueur_actuel] , plateau);
@@ -431,10 +431,13 @@ class MilleBorne extends Program {
         return msg;
     }
 
-    String toString(Plateau plat){
+    String toString(Plateau plat , int joueur_actuel){
         String msg = "";
         for (int i = 0; i < length(plat.liste_joueurs); i++) {
-            msg +=  generateRoute(plat.liste_joueurs[i]) + "\n";
+            if(joueur_actuel == i){
+                msg += VERT;
+            }
+            msg +=  generateRoute(plat.liste_joueurs[i]) + RESET + "\n";
         }
         return msg;
     }
@@ -479,7 +482,7 @@ class MilleBorne extends Program {
                 if(reponseBonne(cartejoué , plat)){
                         avancerDe(joueur , valeurCarte(cartejoué.nom));
                 }else{
-                    println("Réponse est fausse");
+                    delayPrint("La réponse donnée est fausse.",DELAY+15);
                     return false;
                 }
             }else{
