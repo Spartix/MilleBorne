@@ -314,7 +314,6 @@ class MilleBorne extends Program {
             tabquestion[idx] = new Question[rowCount(file[idx])];
             for (int i = 0; i < rowCount(file[idx])-1 ; i++) {
                 tabquestion[idx][i] = newQuestion(getCell(file[idx],i+1,0) , getCell(file[idx],i+1,1) , 1 , getCell(file[idx],i+1,2));
-                println(getCell(file[idx],i+1,0));
             }
         }
         P.questions = tabquestion;
