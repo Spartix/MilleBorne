@@ -9,6 +9,21 @@ class MilleBorne extends Program {
     final NameCards[] CARTES_BORNE = new NameCards[]{ NameCards.BORNES_50,  NameCards.BORNES_100 , NameCards.BORNES_150 , NameCards.BORNES_200};
     final NameCards[] MALUS = new NameCards[] { NameCards.CREVAISON , NameCards.FEU_ROUGE , NameCards.LIMIT_50  , NameCards.LIMIT_100 , NameCards.ACCIDENT};
     final NameCards[] BONUS = new NameCards[]{ NameCards.ROUES  , NameCards.FEU_VERT , NameCards.NO_LIMIT , NameCards.GARAGE};
+    final int[] STATS = new int[]{
+    /* 
+        Les stats des cartes dans l ordre CARTES_BORNE, MALUS et BONUS;
+    */
+    20, // cartes 50;
+    20, // cartes 100;
+    24, // cartes 150;
+    8,  // cartes 200;
+    5,  // crevaisons;
+    5,  // feu rouge 50;
+    5,  // Limit 50;
+    0,  // 
+    0,
+    0,
+    0};
     // nb de cartes
     final int nombre_CARTES_BORNEs = 35;
     final int nombre_cartes_malus = 100;
@@ -32,7 +47,7 @@ class MilleBorne extends Program {
         int joueur_actuel = 0;
         while (!partieFinie(plateau)) {
             clearScreen();
-            print(toString(plateau));
+            print(toString(plateau,joueur_actuel));
             println("Tour du joueur numéro "+(joueur_actuel + 1 )+ ' '+ plateau.liste_joueurs[joueur_actuel].pseudo +"\n");
             println("Les malus du joueur sont : "+toString(plateau.liste_joueurs[joueur_actuel].malus)+"\n");
             tourJoueur(plateau.liste_joueurs[joueur_actuel] , plateau);
@@ -311,7 +326,7 @@ class MilleBorne extends Program {
         Question[][] tabquestion = new Question[length(file)][];
         for (int idx = 0; idx < length(file); idx++) {
             //println("Il y a "+length(tabquestion));
-            tabquestion[idx] = new Question[rowCount(file[idx])];
+            tabquestion[idx] = new Question[rowCount(file[idx])-1];
             for (int i = 0; i < rowCount(file[idx])-1 ; i++) {
                 tabquestion[idx][i] = newQuestion(getCell(file[idx],i+1,0) , getCell(file[idx],i+1,1) , 1 , getCell(file[idx],i+1,2));
             }
@@ -377,6 +392,26 @@ class MilleBorne extends Program {
         tab = slice(tab);
         assertArrayEquals(tab, new String[]{"Bjr","Arv","Bg"});
     }
+
+    Question[] slice(Question[] tableau){
+                /* Fonction qui renvoi un tableau sans les valeur null en fin de tab;
+            (String[]) tableau: tableau à decouper;
+            (int) start: debut du decoupage;
+            (int) stop: fin du decoupage (exclu);
+        */
+        int nb = 0;
+        for (int i = 0; i < length(tableau); i++) {
+            if (tableau[i] == null){
+                nb ++;
+            }
+        }
+        Question[] tab = new Question[length(tableau)-nb];
+        for (int i = 0; i < length(tableau)-nb; i++) {
+            tab[i] = tableau[i];
+        }
+        return tab;
+    }
+
     String[] slice(String[] tableau){
         /* Fonction qui renvoi un tableau sans les valeur null en fin de tab;
             (String[]) tableau: tableau à decouper;
@@ -430,10 +465,13 @@ class MilleBorne extends Program {
         return msg;
     }
 
-    String toString(Plateau plat){
+    String toString(Plateau plat , int joueur_actuel){
         String msg = "";
         for (int i = 0; i < length(plat.liste_joueurs); i++) {
-            msg +=  generateRoute(plat.liste_joueurs[i]) + "\n";
+            if(joueur_actuel == i){
+                msg += VERT;
+            }
+            msg +=  generateRoute(plat.liste_joueurs[i]) + RESET + "\n";
         }
         return msg;
     }
@@ -478,7 +516,7 @@ class MilleBorne extends Program {
                 if(reponseBonne(cartejoué , plat)){
                         avancerDe(joueur , valeurCarte(cartejoué.nom));
                 }else{
-                    println("Réponse est fausse");
+                    delayPrint("La réponse donnée est fausse.",DELAY+15);
                     return false;
                 }
             }else{
@@ -498,8 +536,71 @@ class MilleBorne extends Program {
         Question question = plat.questions[niveau][(int)(random() * (length(plat.questions[niveau])/4))];
         println("La diffculté pour la carte "+carte.nom +" est de "+ carte.difficulte);
         println(question.question);
-        String input = removeUnChar(toLowerCase(readString()));
-        return equals(input,question.reponse);
+        int random_pos = (int) (random() * 5);
+        Question[] tab_q = getQuestionsPerSubject(plat, getSujet(question),niveau);
+        goodRepToEnd(tab_q,getReponse(question));
+        String[] tab_de_4 = genRandomTab(tab_q,3);
+        println(genReponse(random_pos,getReponse(question),tab_de_4));
+        int input = readInt();
+        return random_pos == (input -1);
+    }
+    
+    String[] genRandomTab(Question[] tab_initiale, int nb_questions){
+        // gen des reponses random (faut faire des questions mais pas le temps (ps: j ecris des commentaire alors que j ai pas le temps jsuis vraiment un bouffon))
+        String[] tab_reponse = new String[nb_questions];
+        for (int i = 0; i < nb_questions; i++) {
+            int position = (int)(random() * (length(tab_initiale) - i -1));
+            tab_reponse[i] = getReponse(tab_initiale[position]);
+            tab_initiale[position] = tab_initiale[length(tab_initiale) -1 -i -1 ];
+        }
+        return tab_reponse;
+    }
+
+    String genReponse(int bonne_reponse_index , String reponse , String[] autre_rep){
+        String msg = "";
+        int idx = 0;
+        String[] tab_colors = new String[]{VERT,ROUGE,JAUNE,CYAN};
+        for (int i = 0; i < 4; i++) {
+            msg += tab_colors[i];
+            if (i == bonne_reponse_index) {
+                msg +=  i+1 +") "+reponse + "\t";
+            }else{
+                msg += i+1 +") "+autre_rep[idx] + "\t";
+                idx++;
+            }
+            msg += RESET;
+        }
+        return msg;
+    }
+
+    void goodRepToEnd(Question[] tab , String rep){
+        // fonctions pour positionner la bonne réponse à la fin du tableau
+        int i = 0;
+        while (i < length(tab) && !equals(getReponse(tab[i]),rep)) {
+            i ++;
+        }
+        Question temp = tab[length(tab)-1];
+        tab[length(tab)-1] = tab[i];
+        tab[i] = temp;
+    }
+
+    Question[] getQuestionsPerSubject(Plateau plat, String theme,int niveau){
+        Question[] questions = plat.questions[niveau];
+        int nb_questions = 0;
+        Question[] tab_quest = new Question[length(questions)];
+        for (int i = 0; i < length(questions); i++) {
+            if (equals(getSujet(questions[i]) , theme) ) {
+                tab_quest[nb_questions] = questions[i];
+                nb_questions ++;
+            }
+        }
+        return slice(tab_quest);
+    }
+    String getSujet(Question q){
+        return q.sujet;
+    }
+    String getReponse(Question q){
+        return q.reponse;
     }
     boolean estLimite(Players joueur , Cards carte){
         return carte.valeurDeDéplacement > joueur.malus.limit;
@@ -559,9 +660,9 @@ class MilleBorne extends Program {
         return i != length(BONUS);
     }
 
-    String[] questionReponse(int niveau , String sujet){
-        return new String[5];
-    }
+    // String[] questionReponse(int niveau , String sujet){
+    //     return new String[5];
+    // }
 
     boolean partieFinie(Plateau p){
         int i = 0;
