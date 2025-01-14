@@ -1,64 +1,80 @@
 Question,Réponse,Sujet
-Quelle est la capitale de la France,paris,Geographie
-Combien de continents existe-t-il,7,Geographie
-Quelle est la couleur du ciel par temps clair,bleu,Science
-Quel est l'animal le plus rapide,guepard,Animaux
-Quel est le plus grand océan du monde,pacifique,Geographie
-Combien de mois dans une année,12,Temps
-Combien de pattes a un chien,4,Animaux
-Quel est le plus petit nombre entier,0,Mathematiques
-Combien de jours dans une semaine,7,Temps
-Quel est le principal gaz de l'atmosphère terrestre,azote,Science
-Quelle est la capitale de l'Espagne,madrid,Geographie
-Quelle est la monnaie utilisée en France,euro,Economy
-Quel est le plus grand désert du monde,sahara,Geographie
-Quel est le fruit qui est jaune et courbé,banane,Alimentation
-Quelle est la langue officielle du Japon,japonais,Langues
-Quel est l'instrument de musique à cordes pincées,guitare,Musique
-Quelle est la couleur du soleil,jaune,Science
-Quelle est la distance approximative entre la Terre et la Lune,384400km,Astronomie
-Combien de continents la Russie traverse-t-elle,3,Geographie
-Quelle est la plus haute montagne du monde,everest,Geographie
-Quel est l'élément chimique avec le symbole H,hydrogene,Chimie
-Quel est l'animal symbolisant l'Australie,kangourou,Animaux
-Quelle est la planète la plus proche du Soleil,mercure,Astronomie
-Combien de couleurs y a-t-il dans un arc-en-ciel,7,Science
-Quelle est la monnaie du Royaume-Uni,livresterling,Economy
-Quelle est la capitale du Canada,ottawa,Geographie
-Quel est le gaz qui rend les ballons gonflés,helium,Science
-Quel est l'animal marin avec des tentacules,pieuvre,Animaux
-Quelle est la capitale des États-Unis,washingtondc,Geographie
-Quel est l'organe responsable de la respiration,poumons,Biologie
-Quel est le métal liquide à température ambiante,mercure,Chimie
-Quel est le symbole chimique de l'eau,h2o,Chimie
-Quel est le sport le plus populaire au monde,football,Sport
-Quel est le plus grand animal terrestre,elephant,Animaux
-Combien de touches y a-t-il sur un piano standard,88,Musique
-Quel est l'élément chimique avec le symbole O,oxygene,Chimie
-Quel est le plus long fleuve du monde,nil,Geographie
-Quel est l'animal symbole du courage,lion,Animaux
-Combien de saisons a une année,4,Temps
-Combien de chromosomes possède un être humain,46,Biologie
-Quelle est la capitale de l'Italie,rome,Geographie
-Quel est le métal précieux utilisé dans les bijoux,or,Economy
-Quel est le plus grand pays d'Amérique du Sud,bresil,Geographie
-Quel est l'animal qui peut voler,oiseau,Animaux
-Quel est le plus petit pays du monde,vatican,Geographie
-Quelle est la langue officielle du Brésil,portugais,Langues
-Quel est l'instrument de musique à vent,flute,Musique
-Quel est le plus grand lac d'Afrique,victoria,Geographie
-Quel est l'organe du corps humain qui pompe le sang,coeur,Biologie
-Quel est l'animal le plus lourd,baleine,Animaux
-Combien de couleurs sont sur un drapeau français,3,Geographie
-Quel est l'aliment de base au Japon,riz,Alimentation
-Quel est le plus grand animal marin,baleine,Animaux
-Quel est le gaz que nous expirons,co2,Science
-Quel est le sport qui utilise une raquette,tennis,Sport
-Quel est le plus grand oiseau du monde,autruche,Animaux
-Quel est le plus haut bâtiment du monde,burjkhalifa,Architecture
-Quel est le seul métal liquide à température ambiante,mercure,Chimie
-Quel est l'élément chimique avec le symbole Fe,fer,Chimie
-Quel est le plus grand insecte du monde,scarabe,Animaux
-Quel est l'instrument de musique qui ressemble à un tambour,batterie,Musique
-Quel est le plus grand volcan actif,hawai,Geographie
-Quel est le plus petit os du corps humain,stapes,Biologie
+Quel est le résultat de 7 + 2 ?,9,Mathématiques
+Combien font 15 - 7 ?,8,Mathématiques
+Combien font 3 x 4 ?,12,Mathématiques
+Combien font 16 ÷ 4 ?,4,Mathématiques
+Quel est le carré de 5 ?,25,Mathématiques
+Qui a écrit la Déclaration des Droits de l'Homme et du Citoyen ?,L'Assemblée Nationale,Histoire
+En quelle année a commencé la Première Guerre mondiale ?,1914,Histoire
+Quel roi est surnommé \"Le Roi Soleil\" ?,Louis XIV,Histoire
+Qui a découvert l'Amérique ?,Christophe Colomb,Histoire
+Quelle est la capitale des États-Unis ?,Washington D.C.,Géographie
+Quel est le plus grand désert du monde ?,Le Sahara,Géographie
+Quelle est la capitale de l'Allemagne ?,Berlin,Géographie
+Quel est le plus haut sommet du monde ?,L'Everest,Géographie
+Quel continent est surnommé le \"continent noir\" ?,L'Afrique,Géographie
+Quel gaz respirons-nous principalement ?,L'oxygène,Sciences
+Quel est l'état de la matière de l'eau à 100°C ?,Gaz,Sciences
+Quel est l'animal terrestre le plus rapide ?,Le guépard,Sciences
+Quel organe est responsable de la digestion ?,L'estomac,Sciences
+Quel est le symbole chimique de l'eau ?,H2O,Sciences
+Quel est le triple de 7 ?,21,Mathématiques
+Quelle est la valeur de 10² ?,100,Mathématiques
+Combien font 5 x 8 ?,40,Mathématiques
+Combien font 81 ÷ 9 ?,9,Mathématiques
+Quel est le résultat de 13 + 6 ?,19,Mathématiques
+En quelle année s'est déroulée la bataille de Verdun ?,1916,Histoire
+Quel pays a été dirigé par Napoléon Bonaparte ?,La France,Histoire
+Qui était le premier empereur romain ?,Auguste,Histoire
+Quel événement marque la fin du Moyen Âge ?,La prise de Constantinople,Histoire
+Qui a été couronné roi d'Angleterre en 1066 ?,Guillaume le Conquérant,Histoire
+Quel est le fleuve qui traverse l'Égypte ?,Le Nil,Géographie
+Quelle mer borde la côte sud de la France ?,La mer Méditerranée,Géographie
+Quel pays a pour capitale Canberra ?,L'Australie,Géographie
+Quel est le plus grand pays du monde par sa superficie ?,La Russie,Géographie
+Quel est le continent le plus froid ?,L'Antarctique,Géographie
+Quel organe humain est responsable de la respiration ?,Les poumons,Sciences
+Quel est l'état de la matière de la glace ?,Solide,Sciences
+Quel est le plus petit os du corps humain ?,L'étrier,Sciences
+Quel est le cycle de l'eau ?,Évaporation, condensation, précipitation,Sciences
+Quel est l'élément chimique représenté par le symbole \"O\" ?,L'oxygène,Sciences
+Combien font 14 ÷ 2 ?,7,Mathématiques
+Quel est le résultat de 18 - 9 ?,9,Mathématiques
+Quel est le cube de 3 ?,27,Mathématiques
+Combien font 6 x 6 ?,36,Mathématiques
+Quel est le résultat de 50 ÷ 5 ?,10,Mathématiques
+Qui a signé l'Édit de Nantes ?,Henri IV,Histoire
+En quelle année a eu lieu la Révolution industrielle ?,Au XVIIIe siècle,Histoire
+Quel pays a été envahi par l'Allemagne en 1939 ?,La Pologne,Histoire
+Qui était le principal rival de Jules César ?,Pompée,Histoire
+Quel pays a été le théâtre de la bataille de Waterloo ?,La Belgique,Histoire
+Quelle est la capitale du Japon ?,Tokyo,Géographie
+Quel est le plus grand océan du monde ?,L'océan Pacifique,Géographie
+Quel pays est traversé par le fleuve Amazone ?,Le Brésil,Géographie
+Quelle chaîne de montagnes se trouve entre l'Europe et l'Asie ?,L'Oural,Géographie
+Quelle est la capitale de l'Italie ?,Rome,Géographie
+Quel est le plus grand organe du corps humain ?,La peau,Sciences
+Quel est le nom scientifique du sucre ?,Le glucose,Sciences
+Quelle planète est connue comme \"la planète rouge\" ?,Mars,Sciences
+Quel est l'organe principal du système nerveux ?,Le cerveau,Sciences
+Quel est le symbole chimique du sodium ?,Na,Sciences
+Combien font 25 x 2 ?,50,Mathématiques
+Quel est le résultat de 8² ?,64,Mathématiques
+Combien font 100 - 45 ?,55,Mathématiques
+Combien font 42 ÷ 6 ?,7,Mathématiques
+Quel est le carré de 9 ?,81,Mathématiques
+Qui a écrit \"Les Misérables\" ?,Victor Hugo,Histoire
+Qui a été le premier président des États-Unis ?,George Washington,Histoire
+Quel est le pays d'origine des Jeux Olympiques ?,La Grèce,Histoire
+En quelle année l'homme a-t-il marché sur la Lune ?,1969,Histoire
+Qui a peint la Joconde ?,Léonard de Vinci,Histoire
+Quelle est la capitale de la Russie ?,Moscou,Géographie
+Quel est le plus petit pays du monde ?,Le Vatican,Géographie
+Quel pays est surnommé \"le pays du Soleil-Levant\" ?,Le Japon,Géographie
+Quelle rivière traverse Londres ?,La Tamise,Géographie
+Quelle est la capitale du Canada ?,Ottawa,Géographie
+Quel est l'état de la matière du mercure à température ambiante ?,Liquide,Sciences
+Quelle est l'unité de mesure de l'intensité électrique ?,L'ampère,Sciences
+Quel est l'élément chimique représenté par \"Fe\" ?,Le fer,Sciences
+Quelle est la durée de révolution de la Terre autour du Soleil ?,365 jours,Sciences
+Quelle est la vitesse de la lumière ?,300 000 km/s,Sciences

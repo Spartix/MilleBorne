@@ -38,7 +38,7 @@ class MilleBorne extends Program {
     void algorithm() {
         //enableKeyTypedInConsole(true);
         clearScreen();
-        welcome();
+        //welcome();
         start();
     }
     
@@ -76,6 +76,7 @@ class MilleBorne extends Program {
         //delay(3000);
         if(jouerCarte(joueur.jeu[choix] , joueur , plat)){
             delayPrint("La carte est joué avec success\n",DELAY+10);
+            delay(1000);
         }else{
             delayPrint("la carte a été defaussé\n",DELAY+10);
         }
@@ -513,10 +514,13 @@ class MilleBorne extends Program {
 
         if(estCarteBorne(cartejoué.nom)){
             if(!estBloquer(joueur) && !estLimite(joueur,cartejoué)){
-                if(reponseBonne(cartejoué , plat)){
+                Question question = genQuestion(plat , cartejoué.difficulte);
+                if(reponseBonne(cartejoué , plat , question )){
                         avancerDe(joueur , valeurCarte(cartejoué.nom));
                 }else{
                     delayPrint("La réponse donnée est fausse.",DELAY+15);
+                    delayPrint("La bonne réponse étais "+ getReponse(question)+ "\n",DELAY+15);
+                    delay(1000);
                     return false;
                 }
             }else{
@@ -531,43 +535,45 @@ class MilleBorne extends Program {
         //fonction pour faire avancer le joueur de value KM
         joueur.position_Plateau += value;
     }
-    boolean reponseBonne(Cards carte , Plateau plat){
-        int niveau = carte.difficulte - 1;
-        Question question = plat.questions[niveau][(int)(random() * (length(plat.questions[niveau])/4))];
+
+    Question genQuestion(Plateau plat , int niveau){
+        return plat.questions[niveau-1][(int)(random() * (length(plat.questions[niveau-1])/4))];
+    }
+
+    boolean reponseBonne(Cards carte , Plateau plat , Question question){
+       
+
         println("La diffculté pour la carte "+carte.nom +" est de "+ carte.difficulte);
-        println(question.question);
-        int random_pos = (int) (random() * 5);
-        Question[] tab_q = getQuestionsPerSubject(plat, getSujet(question),niveau);
-        goodRepToEnd(tab_q,getReponse(question));
-        String[] tab_de_4 = genRandomTab(tab_q,3);
-        println(genReponse(random_pos,getReponse(question),tab_de_4));
+        println(question.question); // print la question choisie;
+        
+        Question[] tab_q = getQuestionsPerSubject(plat, getSujet(question),question.niveau);
+        //println("La taille du tab est de"+length(tab_q));
+        goodRepToEnd(tab_q,getReponse(question)); // permet de mettre la bonne réponse a la fin du tableau a fin de ne pas l afficher dans les réponses disponible plus tard;
+        Question[] tab_des_reponses = genRandomTab(tab_q,4); // generer une liste de 4 réponses possible;
+        tab_des_reponses[3] = question; // mettre la bonne à la derniere position;
+        melanger(tab_des_reponses); // mélanger le tableau des questions;
+        println(genReponsePossible(tab_des_reponses)); // afficher les réponses disponible;
         int input = readInt();
-        return random_pos == (input -1);
+        return equals(getReponse(question),getReponse(tab_des_reponses[input - 1]));
     }
     
-    String[] genRandomTab(Question[] tab_initiale, int nb_questions){
-        // gen des reponses random (faut faire des questions mais pas le temps (ps: j ecris des commentaire alors que j ai pas le temps jsuis vraiment un bouffon))
-        String[] tab_reponse = new String[nb_questions];
+    Question[] genRandomTab(Question[] tab_initiale, int nb_questions){
+        // gen des question random
+        Question[] tab_reponse = new Question[nb_questions];
         for (int i = 0; i < nb_questions; i++) {
-            int position = (int)(random() * (length(tab_initiale) - i -1));
-            tab_reponse[i] = getReponse(tab_initiale[position]);
-            tab_initiale[position] = tab_initiale[length(tab_initiale) -1 -i -1 ];
+            int position = (int)(random() * (length(tab_initiale)- i));
+            tab_reponse[i] = tab_initiale[position];
+            tab_initiale[position] = tab_initiale[length(tab_initiale) -1 -i ];
         }
         return tab_reponse;
     }
 
-    String genReponse(int bonne_reponse_index , String reponse , String[] autre_rep){
+    String genReponsePossible(Question[] lst){
         String msg = "";
-        int idx = 0;
         String[] tab_colors = new String[]{VERT,ROUGE,JAUNE,CYAN};
         for (int i = 0; i < 4; i++) {
             msg += tab_colors[i];
-            if (i == bonne_reponse_index) {
-                msg +=  i+1 +") "+reponse + "\t";
-            }else{
-                msg += i+1 +") "+autre_rep[idx] + "\t";
-                idx++;
-            }
+            msg += i+1 +") "+ getReponse(lst[i]) + "\t";
             msg += RESET;
         }
         return msg;
@@ -580,15 +586,20 @@ class MilleBorne extends Program {
             i ++;
         }
         Question temp = tab[length(tab)-1];
-        tab[length(tab)-1] = tab[i];
-        tab[i] = temp;
+        if (i != length(tab)) {
+            tab[length(tab)-1] = tab[i];
+            tab[i] = temp;
+        }
     }
 
     Question[] getQuestionsPerSubject(Plateau plat, String theme,int niveau){
-        Question[] questions = plat.questions[niveau];
+        Question[] questions = plat.questions[niveau-1];
+        // println("Indice chercher est "+niveau);
+        // println("La taille est "+length(questions));
         int nb_questions = 0;
         Question[] tab_quest = new Question[length(questions)];
         for (int i = 0; i < length(questions); i++) {
+            //println("Sujet est "+getSujet(questions[i]));
             if (equals(getSujet(questions[i]) , theme) ) {
                 tab_quest[nb_questions] = questions[i];
                 nb_questions ++;
@@ -673,7 +684,7 @@ class MilleBorne extends Program {
     }
     void welcome() {
         delayPrint(VERT+"Bienvenue dans le jeu du Mille Bornes !\n"+RESET,DELAY);
-        delayPrint(BLEU+"C'est un jeu de cartes où le but est de parcourir 1000 kilomètres en premier 🚗.\n"+RESET,DELAY);
+        delayPrint(BLEU+"C'est un jeu de cartes où le but est de parcourir 1000 bornes en premier 🚗.\n"+RESET,DELAY);
         delayPrint(JAUNE+"Vous pouvez utiliser des malus pour mettre des bâtons dans les roues de vos adversaires 🚧, comme des crevaisons ou des accidents.\n"+RESET,DELAY);
         delayPrint(VERT+"Les bonus vous permettent de contrer les malus que vous avez subis 💪.\n"+RESET,DELAY);
         delayPrint("Attention, il y a aussi une limite de vitesse qui peut être imposée et qui restreint votre progression 🚦.\n",DELAY);
