@@ -31,17 +31,33 @@ class MilleBorne extends Program {
         Plateau plateau = initJeu();
         int joueur_actuel = 0;
         while (!partieFinie(plateau)) {
+
             clearScreen();
             print(toString(plateau,joueur_actuel));
-            println("Tour du joueur numéro "+(joueur_actuel + 1 )+ ' '+ plateau.liste_joueurs[joueur_actuel].pseudo +"\n");
-            println("Les malus du joueur sont : "+toString(plateau.liste_joueurs[joueur_actuel].malus)+"\n");
-            tourJoueur(plateau.liste_joueurs[joueur_actuel] , plateau);
-            //delay(3000);
-            joueur_actuel = (joueur_actuel+1) % length(plateau.liste_joueurs);
+            while (true) {
+                clearScreen();
+                Question question = genQuestion(plateau , 3);
+                for (int i = 0; i < length(getSujet(question)); i++) {
+                    println("wsh bg le sujet c'est "+getSujet(question));
+                }
+                Cards carte = newCards(NameCards.BORNES_150,150,true,3);
+                reponseBonne(carte,plateau,question);
+            }
+            // println("Tour du joueur numéro "+(joueur_actuel + 1 )+ ' '+ plateau.liste_joueurs[joueur_actuel].pseudo +"\n");
+            // println("Les malus du joueur sont : "+toString(plateau.liste_joueurs[joueur_actuel].malus)+"\n");
+            // tourJoueur(plateau.liste_joueurs[joueur_actuel] , plateau);
+            // //delay(3000);
+            // joueur_actuel = (joueur_actuel+1) % length(plateau.liste_joueurs);
+            // if (piocheVide(plateau)) {
+            //     initPioche(plateau);
+            // }
         }
         println("GG le joueur"+ getWinner(plateau) + " a gagné");
-    }
 
+    }
+    boolean piocheVide(Plateau plat){
+        return plat.nb_cartes_pioche == 0;
+    }
     String getWinner(Plateau plat){
         int i = 0;
         while (i < length(plat.liste_joueurs) && plat.liste_joueurs[i].position_Plateau >= 1000) {
@@ -237,6 +253,24 @@ class MilleBorne extends Program {
         joueur.malus = new Malus();
         return joueur;
     }
+    String saisiePseudo(Plateau p){
+        print("Saissisez un pseudo :");
+        String saisie = readString();
+        while (length(saisie) <= 0 || length(saisie) >= 10 && !exist(saisie,p)){
+            println("Votre pseudo ne doit pas être déjà utilisé et doit faire entre 1 et 10 caractères.");
+            saisie = readString();
+        }
+        return saisie;
+    }
+
+    boolean exist(String input , Plateau plat){
+        int i = 0;
+        while (i < length(plat.liste_joueurs) && !equals(plat.liste_joueurs[i].pseudo,input)) {
+            i ++;
+        }
+        return i != length(plat.liste_joueurs);
+    }
+
     int saisir(String message ,int min , int max){
         /*
         fonction de controle de saisie;
@@ -520,7 +554,8 @@ class MilleBorne extends Program {
                 }else{
                     delayPrint("La réponse donnée est fausse.",DELAY+15);
                     delayPrint("La bonne réponse étais "+ getReponse(question)+ "\n",DELAY+15);
-                    delay(1000);
+                    println("Appuyez sur Entrée pour continuer");
+                    readString();
                     return false;
                 }
             }else{
@@ -543,13 +578,12 @@ class MilleBorne extends Program {
     boolean reponseBonne(Cards carte , Plateau plat , Question question){
        
 
-        println("La diffculté pour la carte "+carte.nom +" est de "+ carte.difficulte);
+        //println("La diffculté pour la carte "+carte.nom +" est de "+ carte.difficulte);
         println(question.question); // print la question choisie;
         
         Question[] tab_q = getQuestionsPerSubject(plat, getSujet(question),question.niveau);
         //println("La taille du tab est de"+length(tab_q));
         goodRepToEnd(tab_q,getReponse(question)); // permet de mettre la bonne réponse a la fin du tableau a fin de ne pas l afficher dans les réponses disponible plus tard;
-        tab_q[length(tab_q) -1 ] = null;
         Question[] tab_des_reponses = genRandomTab(tab_q,4); // generer une liste de 4 réponses possible;
         tab_des_reponses[3] = question; // mettre la bonne à la derniere position;
         melanger(tab_des_reponses); // mélanger le tableau des questions;
@@ -595,12 +629,10 @@ class MilleBorne extends Program {
 
     Question[] getQuestionsPerSubject(Plateau plat, String theme,int niveau){
         Question[] questions = plat.questions[niveau-1];
-        // println("Indice chercher est "+niveau);
-        // println("La taille est "+length(questions));
         int nb_questions = 0;
         Question[] tab_quest = new Question[length(questions)];
         for (int i = 0; i < length(questions); i++) {
-            //println("Sujet est "+getSujet(questions[i]));
+            print(theme +" "+getSujet(questions[i]));
             if (equals(getSujet(questions[i]) , theme) ) {
                 tab_quest[nb_questions] = questions[i];
                 nb_questions ++;
@@ -659,7 +691,7 @@ class MilleBorne extends Program {
             else if (carte.nom == NameCards.ACCIDENT) {
                 plat.liste_joueurs[choix-1].malus.accident = true;
             }else{
-                println("La carte est pas trouvé "+carte.nom);
+                println("La carte "+carte.nom+" n'a pas été trouvé");
             }
         }
     }
