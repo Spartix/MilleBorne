@@ -9,21 +9,7 @@ class MilleBorne extends Program {
     final NameCards[] CARTES_BORNE = new NameCards[]{ NameCards.BORNES_50,  NameCards.BORNES_100 , NameCards.BORNES_150 , NameCards.BORNES_200};
     final NameCards[] MALUS = new NameCards[] { NameCards.CREVAISON , NameCards.FEU_ROUGE , NameCards.LIMIT_50  , NameCards.LIMIT_100 , NameCards.ACCIDENT};
     final NameCards[] BONUS = new NameCards[]{ NameCards.ROUES  , NameCards.FEU_VERT , NameCards.NO_LIMIT , NameCards.GARAGE};
-    final int[] STATS = new int[]{
-    /* 
-        Les stats des cartes dans l ordre CARTES_BORNE, MALUS et BONUS;
-    */
-    20, // cartes 50;
-    20, // cartes 100;
-    24, // cartes 150;
-    8,  // cartes 200;
-    5,  // crevaisons;
-    5,  // feu rouge 50;
-    5,  // Limit 50;
-    0,  // 
-    0,
-    0,
-    0};
+
     // nb de cartes
     final int nombre_CARTES_BORNEs = 35;
     final int nombre_cartes_malus = 100;
@@ -88,6 +74,8 @@ class MilleBorne extends Program {
         int nbJoueurs = saisir("Entrez un nombre de joueurs : ", 2, 4);
         Plateau plateau = newPlateau(nbJoueurs);
         initPioche(plateau);
+        //println(toString(plateau.pioche));
+        //delay(100000);
         initQuestions(plateau);
         //println(toString(plateau.questions));
         initJoueurs(plateau);
@@ -115,20 +103,33 @@ class MilleBorne extends Program {
 
     void initPioche(Plateau plateau){
         // fonction pour initialiser une pioche pour le plateau p , aleatoire
-        plateau.nb_cartes_pioche = nombre_CARTES_BORNEs + (nombre_cartes_malus * 3);
+        plateau.nb_cartes_pioche = 0;
+        
+        int idx = 0;
+        CSVFile file = loadCSV("./ressources/stats.csv");
+        for (int i = 1; i < rowCount(file); i++) {
+            plateau.nb_cartes_pioche += stringToInt(getCell(file,i,1));
+        }
+        
         plateau.pioche = new Cards[plateau.nb_cartes_pioche];
-        int i = 0;
-        while (i < plateau.nb_cartes_pioche) {
-            if (i < nombre_cartes_malus) {
-                plateau.pioche[i] = carteAleatoire(creerPaquetNom(MALUS));
-                i++;
-                plateau.pioche[i] = carteAleatoire(creerPaquetNom(BONUS));
-                i++;
-                plateau.pioche[i] = carteAleatoire(creerPaquetNom(BONUS));
-                i++;
-            }else{
-                plateau.pioche[i] = carteAleatoire(creerPaquetNom(CARTES_BORNE));
-                i++;
+
+        for (int i = 0; i < length(CARTES_BORNE); i++) {
+            for (int u = 0; u < getStatPerName(CARTES_BORNE[i]); u++) {
+                plateau.pioche[idx] = newCards(CARTES_BORNE[i], valeurCarte(CARTES_BORNE[i]), true , valeurDifficulte(CARTES_BORNE[i]));
+                idx ++;
+            }
+        }
+        for (int i = 0; i < length(MALUS); i++) {
+            println(getStatPerName(MALUS[i]));
+            for (int u = 0; u < getStatPerName(MALUS[i]); u++) {
+                plateau.pioche[idx] = newCards(MALUS[i], valeurCarte(MALUS[i]), true , valeurDifficulte(MALUS[i]));
+                idx ++;
+            }
+        }
+        for (int i = 0; i < length(BONUS); i++) {
+            for (int u = 0; u < getStatPerName(BONUS[i]); u++) {
+                plateau.pioche[idx] = newCards(BONUS[i], valeurCarte(BONUS[i]), true , valeurDifficulte(BONUS[i]));
+                idx ++;
             }
         }
         melanger(plateau.pioche);
@@ -340,7 +341,7 @@ class MilleBorne extends Program {
     // Les fonctions toString des diffenrents nouveaux type
 
     String toString(Cards[] paquet){
-        String[][] msg = new String[7][8]; // 7 cartes qui prennent 7 lignes;
+        String[][] msg = new String[length(paquet)][8]; // 7 cartes qui prennent 8 lignes;
         //String msg2 = "";
         for (int i = 0; i < length(paquet); i++) {
             if(paquet[i] != null){
@@ -485,6 +486,10 @@ class MilleBorne extends Program {
         return msg;
     }
 
+    String toString(NameCards carte){
+        return "" + carte;
+    }
+
     String toString(Malus malus){
         String msg = "";
         boolean feu=true;
@@ -504,6 +509,18 @@ class MilleBorne extends Program {
         return msg ;
     }
 
+    int getStatPerName(NameCards nom){
+        CSVFile file = loadCSV("./ressources/stats.csv");
+        int i = 1;
+        while (i < rowCount(file) && !equals(getCell(file,i,0) , toString(nom))) {
+            i ++;
+        }
+        if (i != rowCount(file)) {
+            return stringToInt(getCell(file,i,1));
+        }else{
+            return 0;
+        }
+    }
 
     boolean estBloquer(Players joueur){
         return joueur.malus.feu || joueur.malus.crever || joueur.malus.accident;
