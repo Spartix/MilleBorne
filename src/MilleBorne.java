@@ -120,13 +120,13 @@ class MilleBorne extends Program {
         for (int i = 0; i < length(MALUS); i++) {
             println(getStatPerName(MALUS[i]));
             for (int u = 0; u < getStatPerName(MALUS[i]); u++) {
-                plateau.pioche[idx] = newCards(MALUS[i], valeurCarte(MALUS[i]), true , valeurDifficulte(MALUS[i]));
+                plateau.pioche[idx] = newCards(MALUS[i], valeurCarte(MALUS[i]), false , valeurDifficulte(MALUS[i]));
                 idx ++;
             }
         }
         for (int i = 0; i < length(BONUS); i++) {
             for (int u = 0; u < getStatPerName(BONUS[i]); u++) {
-                plateau.pioche[idx] = newCards(BONUS[i], valeurCarte(BONUS[i]), true , valeurDifficulte(BONUS[i]));
+                plateau.pioche[idx] = newCards(BONUS[i], valeurCarte(BONUS[i]), false , valeurDifficulte(BONUS[i]));
                 idx ++;
             }
         }
