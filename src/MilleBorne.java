@@ -355,7 +355,7 @@ class MilleBorne extends Program {
 
     void initQuestions(Plateau P){
         //saveCSV( new String[][]{{"OUOU"},{"AA"}} , "./ressources/caca.csv");
-        CSVFile[] file = new CSVFile[]{loadCSV("./ressources/questionv1.csv"),loadCSV("./ressources/questionv2.csv"),loadCSV("./ressources/questionv3.csv"),loadCSV("./ressources/questionv4.csv")};
+        CSVFile[] file = new CSVFile[]{loadCSV("./ressources/questionv1.csv",";"),loadCSV("./ressources/questionv2.csv",";"),loadCSV("./ressources/questionv3.csv",";"),loadCSV("./ressources/questionv4.csv",";")};
         Question[][] tabquestion = new Question[length(file)][];
         for (int idx = 0; idx < length(file); idx++) {
             //println("Il y a "+length(tabquestion));
