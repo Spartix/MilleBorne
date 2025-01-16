@@ -34,23 +34,14 @@ class MilleBorne extends Program {
 
             clearScreen();
             print(toString(plateau,joueur_actuel));
-            while (true) {
-                clearScreen();
-                Question question = genQuestion(plateau , 3);
-                for (int i = 0; i < length(getSujet(question)); i++) {
-                    println("wsh bg le sujet c'est "+getSujet(question));
-                }
-                Cards carte = newCards(NameCards.BORNES_150,150,true,3);
-                reponseBonne(carte,plateau,question);
+            println("Tour de "+plateau.liste_joueurs[joueur_actuel].pseudo + "vous êtes le joueur "+(joueur_actuel + 1 )+ ' '+ +"\n");
+            println("Les malus du joueur sont : "+toString(plateau.liste_joueurs[joueur_actuel].malus)+"\n");
+            tourJoueur(plateau.liste_joueurs[joueur_actuel] , plateau);
+            //delay(3000);
+            joueur_actuel = (joueur_actuel+1) % length(plateau.liste_joueurs);
+            if (piocheVide(plateau)) {
+                initPioche(plateau);
             }
-            // println("Tour du joueur numéro "+(joueur_actuel + 1 )+ ' '+ plateau.liste_joueurs[joueur_actuel].pseudo +"\n");
-            // println("Les malus du joueur sont : "+toString(plateau.liste_joueurs[joueur_actuel].malus)+"\n");
-            // tourJoueur(plateau.liste_joueurs[joueur_actuel] , plateau);
-            // //delay(3000);
-            // joueur_actuel = (joueur_actuel+1) % length(plateau.liste_joueurs);
-            // if (piocheVide(plateau)) {
-            //     initPioche(plateau);
-            // }
         }
         println("GG le joueur"+ getWinner(plateau) + " a gagné");
 
@@ -134,7 +125,6 @@ class MilleBorne extends Program {
             }
         }
         for (int i = 0; i < length(MALUS); i++) {
-            println(getStatPerName(MALUS[i]));
             for (int u = 0; u < getStatPerName(MALUS[i]); u++) {
                 plateau.pioche[idx] = newCards(MALUS[i], valeurCarte(MALUS[i]), false , valeurDifficulte(MALUS[i]));
                 idx ++;
@@ -203,7 +193,7 @@ class MilleBorne extends Program {
         for (int i = 0; i < length(plat.liste_joueurs); i++) {
             clearScreen();
             print("Bonjour joueur "+ (i+1) + " ! Veuillez entrer votre pseudo : ");
-            String pseudo = readString(); // ICI FAIRE UN CONTROLE DE SASIE;
+            String pseudo = saisiePseudo(plat);
             println("1  2  3  4  5");
             println(toString(voitures_dispo));
             int nb_Voiture = saisir("Veuillez choisir un vehicule : ",1,length(voitures_dispo));
@@ -256,8 +246,9 @@ class MilleBorne extends Program {
     String saisiePseudo(Plateau p){
         print("Saissisez un pseudo :");
         String saisie = readString();
-        while (length(saisie) <= 0 || length(saisie) >= 10 && !exist(saisie,p)){
+        while (length(saisie) <= 0 || length(saisie) >= 10 || exist(saisie,p)){
             println("Votre pseudo ne doit pas être déjà utilisé et doit faire entre 1 et 10 caractères.");
+            print("Saissisez un pseudo :");
             saisie = readString();
         }
         return saisie;
@@ -265,10 +256,17 @@ class MilleBorne extends Program {
 
     boolean exist(String input , Plateau plat){
         int i = 0;
-        while (i < length(plat.liste_joueurs) && !equals(plat.liste_joueurs[i].pseudo,input)) {
-            i ++;
+        while (i < length(plat.liste_joueurs)) {
+            if (plat.liste_joueurs[i] != null) {
+                if (equals(plat.liste_joueurs[i].pseudo,input)) {
+                    return true;
+                }
+            }else{
+                return false;
+            }
+            i++;
         }
-        return i != length(plat.liste_joueurs);
+        return (i != length(plat.liste_joueurs));
     }
 
     int saisir(String message ,int min , int max){
@@ -355,7 +353,7 @@ class MilleBorne extends Program {
 
     void initQuestions(Plateau P){
         //saveCSV( new String[][]{{"OUOU"},{"AA"}} , "./ressources/caca.csv");
-        CSVFile[] file = new CSVFile[]{loadCSV("./ressources/questionv1.csv",";"),loadCSV("./ressources/questionv2.csv",";"),loadCSV("./ressources/questionv3.csv",";"),loadCSV("./ressources/questionv4.csv",";")};
+        CSVFile[] file = new CSVFile[]{loadCSV("./ressources/questionv1.csv",';'),loadCSV("./ressources/questionv2.csv",';'),loadCSV("./ressources/questionv3.csv",';'),loadCSV("./ressources/questionv4.csv",';')};
         Question[][] tabquestion = new Question[length(file)][];
         for (int idx = 0; idx < length(file); idx++) {
             //println("Il y a "+length(tabquestion));
@@ -588,7 +586,7 @@ class MilleBorne extends Program {
         tab_des_reponses[3] = question; // mettre la bonne à la derniere position;
         melanger(tab_des_reponses); // mélanger le tableau des questions;
         println(genReponsePossible(tab_des_reponses)); // afficher les réponses disponible;
-        int input = readInt();
+        int input = saisir("\n>",1,4);
         return equals(getReponse(question),getReponse(tab_des_reponses[input - 1]));
     }
     
@@ -632,7 +630,6 @@ class MilleBorne extends Program {
         int nb_questions = 0;
         Question[] tab_quest = new Question[length(questions)];
         for (int i = 0; i < length(questions); i++) {
-            print(theme +" "+getSujet(questions[i]));
             if (equals(getSujet(questions[i]) , theme) ) {
                 tab_quest[nb_questions] = questions[i];
                 nb_questions ++;
