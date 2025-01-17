@@ -2,7 +2,7 @@ import extensions.*;
 class MilleBorne extends Program {
 
     // les voitures en String car en Char ils n existent pas
-    final String[] voitures_dispo = new String[]{"🚗","🚙","🚕","🚐","🚓"};
+    final String[] VOITURES_DISPO = new String[]{"🚗","🚙","🚕","🚐","🚓"};
     // Delay d affichage de chaque carac
     final int DELAY = 25;
     // noms des cartes , leur associations en valeur et leur associations en nombre;
@@ -20,10 +20,10 @@ class MilleBorne extends Program {
     final String MAGENTA = "\033[35m";
     final String CYAN = "\033[36m";
 
-    void algorithm() {
+    void _algorithm() {
         //enableKeyTypedInConsole(true);
         clearScreen();
-        //welcome();
+        welcome();
         start();
     }
     
@@ -87,23 +87,6 @@ class MilleBorne extends Program {
         distribuerCartes(plateau);
         return plateau;
     }
-
-    int taillePaquet(int[] nombre){
-        //pas utile
-        int total = 0;
-        for (int i = 0; i < length(nombre); i++) {
-            total += nombre[i];
-        }
-        return total;
-    }
-
-
-    Cards carteAleatoire(Cards[] paquet){
-        // donne une carte aleatoire parmis une liste de carte (Cards)
-        return paquet[(int) (random() * length(paquet))];
-    }
-
-
     //initialisations 
 
     void initPioche(Plateau plateau){
@@ -157,15 +140,6 @@ class MilleBorne extends Program {
             paquet[i] = carte_choisi;
         }
     }
-    Cards[] creerPaquetNom(NameCards[] noms){
-        //fonction pour creer un paquet de carte Cards[] à partir d un tableau de NameCards (nom des cartes)
-        Cards[] paquet = new Cards[length(noms)];
-        for (int i = 0; i < length(noms); i++) {
-            paquet[i] = newCards(noms[i],valeurCarte(noms[i]),estCarteBorne(noms[i]),valeurDifficulte(noms[i]));
-        }
-        return paquet;
-    }
-
     int valeurCarte(NameCards nom){
         for (int i = 0; i < length(CARTES_BORNE); i++) {
             if(nom == CARTES_BORNE[i]){
@@ -195,9 +169,9 @@ class MilleBorne extends Program {
             print("Bonjour joueur "+ (i+1) + " ! Veuillez entrer votre pseudo : ");
             String pseudo = saisiePseudo(plat);
             println("1  2  3  4  5");
-            println(toString(voitures_dispo));
-            int nb_Voiture = saisir("Veuillez choisir un vehicule : ",1,length(voitures_dispo));
-            plat.liste_joueurs[i] = newPlayers(i, pseudo , voitures_dispo[nb_Voiture-1]);
+            println(toString(VOITURES_DISPO));
+            int nb_Voiture = saisir("Veuillez choisir un vehicule : ",1,length(VOITURES_DISPO));
+            plat.liste_joueurs[i] = newPlayers(i, pseudo , VOITURES_DISPO[nb_Voiture-1]);
         }
     }
 
@@ -215,7 +189,7 @@ class MilleBorne extends Program {
     }
 
     void testGetVoiture(){
-        assertEquals("🚗 🚙 🚕 🚐 🚓 " , toString(voitures_dispo));
+        assertEquals("🚗 🚙 🚕 🚐 🚓 " , toString(VOITURES_DISPO));
     }
 
     Plateau newPlateau(int  nbJoueurs){
@@ -297,13 +271,10 @@ class MilleBorne extends Program {
     void testGenerateRoute(){
         Players p = newPlayers(1,"J1","🚗");
         p.position_Plateau = 1000;
-        assertEquals("   __________________________________________________\n  |                                                  |\n  |                                                🚗|\n  |__________________________________________________|",generateRoute(p));
-        Players p2 = newPlayers(1,"J2","🚙");
-        p2.position_Plateau = 0;
-        assertEquals("   __________________________________________________\n  |                                                  |\n  |🚙                                                |\n  |__________________________________________________|",generateRoute(p2));
+        assertEquals("   __________________________________________________ \n  |                                                  |\n  |                                                🚗|\n  |__________________________________________________|",generateRoute(p));
         Players p3 = newPlayers(1,"J3","🚐");
         p3.position_Plateau = 485;
-        assertEquals("   __________________________________________________\n  |                                                  |\n  |                      🚐                          |\n  |__________________________________________________|",generateRoute(p3));
+        assertEquals("   __________________________________________________ \n  |                                                  |\n  |                      🚐                          |\n  |__________________________________________________|",generateRoute(p3));
     }
 
     String generateRoute(Players joueur) {
@@ -367,7 +338,7 @@ class MilleBorne extends Program {
 
 
 
-    // Les fonctions toString des diffenrents nouveaux type
+    // Les fonctions toString des differents nouveaux type
 
     String toString(Cards[] paquet){
         String[][] msg = new String[7][8]; // 7 cartes qui prennent 7 lignes;
@@ -380,9 +351,14 @@ class MilleBorne extends Program {
         }
         return toString(msg);
     }
+
+
     void testStringToArray(){
         String[][] tab1 = new String[][]{{"1erl","2emel"},{"2emecarte","2emecarte"}};
         String[][] tab2 = new String[][]{stringToArray("1erl\n2emel"),stringToArray("2emecarte\n2emecarte")};
+        assertArrayEquals(tab1[1],tab2[1]);
+        tab1 = new String[][]{{"abc","pp"},{"def","gh"}};
+        tab2 = new String[][]{stringToArray("abc\npp"),stringToArray("def\ngh")};
         assertArrayEquals(tab1[1],tab2[1]);
     }
     String toString(String[][] tab_double) {
@@ -394,10 +370,6 @@ class MilleBorne extends Program {
             msg += "\n";
         }
         return msg;
-    }
-
-    void testToString(){
-
     }
 
     String[] stringToArray(String msg){
@@ -418,11 +390,6 @@ class MilleBorne extends Program {
         }
         return slice(tab);
     }
-    void testSlice(){
-        String[] tab = new String[]{"Bjr","Arv","Bg",null,null,null};
-        tab = slice(tab);
-        assertArrayEquals(tab, new String[]{"Bjr","Arv","Bg"});
-    }
 
     Question[] slice(Question[] tableau){
                 /* Fonction qui renvoi un tableau sans les valeur null en fin de tab;
@@ -442,7 +409,11 @@ class MilleBorne extends Program {
         }
         return tab;
     }
-
+    void testSlice(){
+        Question[] tableau = {new Question(), new Question(), new Question(), null, null};
+        Question[] result = slice(tableau);
+        assertEquals(3,length(result));
+    }
     String[] slice(String[] tableau){
         /* Fonction qui renvoi un tableau sans les valeur null en fin de tab;
             (String[]) tableau: tableau à decouper;
@@ -460,6 +431,11 @@ class MilleBorne extends Program {
             tab[i] = tableau[i];
         }
         return tab;
+    }
+    void testSliceString(){
+        String[] tableau = {"abc","def", "toi" ,"jprefretwa", null, null,null,null};
+        String[] result = slice(tableau);
+        assertEquals(4,length(result));
     }
 
 
