@@ -20,7 +20,7 @@ class MilleBorne extends Program {
     final String MAGENTA = "\033[35m";
     final String CYAN = "\033[36m";
 
-    void _algorithm() {
+    void algorithm() {
         //enableKeyTypedInConsole(true);
         clearScreen();
         welcome();
