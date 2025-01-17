@@ -22,7 +22,6 @@ class MilleBorne extends Program {
     final String CYAN = "\033[36m";
 
     void algorithm() {
-        //enableKeyTypedInConsole(true);
         clearScreen();
         afficherFichier(LOGO);
         print("Appuyer sur \"entrée\" pour commencer à jouer");
@@ -92,11 +91,11 @@ class MilleBorne extends Program {
         Plateau plateau = newPlateau(nbJoueurs);
         initPioche(plateau);
         initQuestions(plateau);
-        //println(toString(plateau.questions));
         initJoueurs(plateau);
         distribuerCartes(plateau);
         return plateau;
     }
+
     //initialisations 
 
     void initPioche(Plateau plateau){
@@ -337,7 +336,6 @@ class MilleBorne extends Program {
         CSVFile[] file = new CSVFile[]{loadCSV("./ressources/questionv1.csv",';'),loadCSV("./ressources/questionv2.csv",';'),loadCSV("./ressources/questionv3.csv",';'),loadCSV("./ressources/questionv4.csv",';')};
         Question[][] tabquestion = new Question[length(file)][];
         for (int idx = 0; idx < length(file); idx++) {
-            //println("Il y a "+length(tabquestion));
             tabquestion[idx] = new Question[rowCount(file[idx])-1];
             for (int i = 0; i < rowCount(file[idx])-1 ; i++) {
                 tabquestion[idx][i] = newQuestion(getCell(file[idx],i+1,0) , getCell(file[idx],i+1,1) , 1 , getCell(file[idx],i+1,2));
@@ -352,10 +350,8 @@ class MilleBorne extends Program {
 
     String toString(Cards[] paquet){
         String[][] msg = new String[7][8]; // 7 cartes qui prennent 7 lignes;
-        //String msg2 = "";
         for (int i = 0; i < length(paquet); i++) {
             if(paquet[i] != null){
-                //msg[i] = stringToArray(toString(paquet[i],i+1));
                 msg[i] = stringToArray(toString(paquet[i],i+1));
             }
         }
@@ -402,11 +398,11 @@ class MilleBorne extends Program {
     }
 
     Question[] slice(Question[] tableau){
-                /* Fonction qui renvoi un tableau sans les valeur null en fin de tab;
+            /* Fonction qui renvoi un tableau sans les valeur null en fin de tab;
             (String[]) tableau: tableau à decouper;
             (int) start: debut du decoupage;
             (int) stop: fin du decoupage (exclu);
-        */
+            */
         int nb = 0;
         for (int i = 0; i < length(tableau); i++) {
             if (tableau[i] == null){
@@ -683,10 +679,6 @@ class MilleBorne extends Program {
         }
         return i != length(BONUS);
     }
-
-    // String[] questionReponse(int niveau , String sujet){
-    //     return new String[5];
-    // }
 
     boolean partieFinie(Plateau p){
         int i = 0;
