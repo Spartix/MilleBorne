@@ -1,6 +1,7 @@
 import extensions.*;  
 class MilleBorne extends Program {
 
+    final String LOGO = "ressources/message.txt";
     // les voitures en String car en Char ils n existent pas
     final String[] VOITURES_DISPO = new String[]{"🚗","🚙","🚕","🚐","🚓"};
     // Delay d affichage de chaque carac
@@ -23,9 +24,24 @@ class MilleBorne extends Program {
     void algorithm() {
         //enableKeyTypedInConsole(true);
         clearScreen();
+        afficherFichier(LOGO);
+        print("Appuyer sur \"entrée\" pour commencer à jouer");
+		readString();
+        clearScreen();
         welcome();
         start();
     }
+
+    //Affichage du contenu d'un fichier texte d'après son chemin
+	void afficherFichier(String chemin){
+		File unTexte = newFile(chemin);
+
+		//Stockage dans une variable de la ligne suivante dans le fichier
+		while(ready(unTexte)){
+			//affichage du contenu de la ligne suivante
+			println(readLine(unTexte));
+		}
+	}
     
     void start(){
         Plateau plateau = initJeu();
@@ -34,7 +50,7 @@ class MilleBorne extends Program {
 
             clearScreen();
             print(toString(plateau,joueur_actuel));
-            println("Tour de "+plateau.liste_joueurs[joueur_actuel].pseudo + "vous êtes le joueur "+(joueur_actuel + 1 ) +"\n");
+            println("Tour de "+plateau.liste_joueurs[joueur_actuel].pseudo + ", vous êtes le joueur "+(joueur_actuel + 1 ) +"\n");
             println("Les malus du joueur sont : "+toString(plateau.liste_joueurs[joueur_actuel].malus)+"\n");
             tourJoueur(plateau.liste_joueurs[joueur_actuel] , plateau);
             //delay(3000);
@@ -59,20 +75,14 @@ class MilleBorne extends Program {
     void tourJoueur(Players joueur , Plateau plat){
         joueur.jeu[joueur.index_vide] =  piocher(plat);
         println(toString(joueur.jeu));
-        //delay(3000);
         int choix = saisir("numéro de la carte a joué: ",1,7) -1;
-        //delay(3000);
-        //println("Le choix est "+ choix);
-        //delay(3000);
         println("la carte joué est "+joueur.jeu[choix].nom);
-        //delay(3000);
         if(jouerCarte(joueur.jeu[choix] , joueur , plat)){
             delayPrint("La carte est joué avec success\n",DELAY+10);
             delay(1000);
         }else{
             delayPrint("la carte a été defaussé\n",DELAY+10);
         }
-        // vider la case de la carte
         joueur.index_vide = choix;
         joueur.jeu[choix] = null;
     }
@@ -526,9 +536,9 @@ class MilleBorne extends Program {
                 if(reponseBonne(cartejoué , plat , question )){
                         avancerDe(joueur , valeurCarte(cartejoué.nom));
                 }else{
-                    delayPrint("La réponse donnée est fausse.",DELAY+15);
-                    delayPrint("La bonne réponse étais "+ getReponse(question)+ "\n",DELAY+15);
-                    println("Appuyez sur Entrée pour continuer");
+                    delayPrint("La réponse donnée est fausse. ",DELAY+15);
+                    delayPrint("La bonne réponse étais \""+ getReponse(question)+ "\"\n",DELAY+15);
+                    println("Appuyez sur \"Entrée\" pour continuer");
                     readString();
                     return false;
                 }
@@ -551,12 +561,9 @@ class MilleBorne extends Program {
 
     boolean reponseBonne(Cards carte , Plateau plat , Question question){
        
-
-        //println("La diffculté pour la carte "+carte.nom +" est de "+ carte.difficulte);
         println(question.question); // print la question choisie;
         
         Question[] tab_q = getQuestionsPerSubject(plat, getSujet(question),question.niveau);
-        //println("La taille du tab est de"+length(tab_q));
         goodRepToEnd(tab_q,getReponse(question)); // permet de mettre la bonne réponse a la fin du tableau a fin de ne pas l afficher dans les réponses disponible plus tard;
         Question[] tab_des_reponses = genRandomTab(tab_q,4); // generer une liste de 4 réponses possible;
         tab_des_reponses[3] = question; // mettre la bonne à la derniere position;
