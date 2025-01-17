@@ -34,7 +34,7 @@ class MilleBorne extends Program {
 
             clearScreen();
             print(toString(plateau,joueur_actuel));
-            println("Tour de "+plateau.liste_joueurs[joueur_actuel].pseudo + "vous êtes le joueur "+(joueur_actuel + 1 )+ ' '+ +"\n");
+            println("Tour de "+plateau.liste_joueurs[joueur_actuel].pseudo + "vous êtes le joueur "+(joueur_actuel + 1 ) +"\n");
             println("Les malus du joueur sont : "+toString(plateau.liste_joueurs[joueur_actuel].malus)+"\n");
             tourJoueur(plateau.liste_joueurs[joueur_actuel] , plateau);
             //delay(3000);
