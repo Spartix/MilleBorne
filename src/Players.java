@@ -1,5 +1,6 @@
 class Players{
-    /*
+    /* 
+    int numéro représente le numéro du joueur (useless for moment);
     String voiture est la voiture utilisé par le joueur;
     int position_Plateau représente la poisition actuel du joueur sur le plateau (1 = 1KM);
     Cards[] jeu représente la main d un joueur (les cartes qu il a actuellement dans sa main);
@@ -8,10 +9,14 @@ class Players{
     Malus malus représente les malus que le joueur subis ou non;
     */
     String pseudo;
-    int numero;
     String voiture;
     int position_Plateau=0;
     Cards[] jeu = new Cards[7];
     int index_vide=6;
     Malus malus;
 }
+
+
+
+
+YAGNI;
