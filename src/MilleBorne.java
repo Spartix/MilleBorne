@@ -58,7 +58,7 @@ class MilleBorne extends Program {
                 initPioche(plateau);
             }
         }
-        println("GG le joueur"+ getWinner(plateau) + " a gagné");
+        println("GG le joueur \""+ getWinner(plateau) + "\" a gagné");
 
     }
     boolean piocheVide(Plateau plat){
@@ -66,7 +66,7 @@ class MilleBorne extends Program {
     }
     String getWinner(Plateau plat){
         int i = 0;
-        while (i < length(plat.liste_joueurs) && plat.liste_joueurs[i].position_Plateau >= 1000) {
+        while (i < length(plat.liste_joueurs) && plat.liste_joueurs[i].position_Plateau <= 1000) {
             i ++;
         }
         return plat.liste_joueurs[i].pseudo;
@@ -74,13 +74,14 @@ class MilleBorne extends Program {
     void tourJoueur(Players joueur , Plateau plat){
         joueur.jeu[joueur.index_vide] =  piocher(plat);
         println(toString(joueur.jeu));
-        int choix = saisir("numéro de la carte a joué: ",1,7) -1;
+        int choix = saisir("numéro de la carte à jouer: ",1,7) -1;
         println("la carte joué est "+joueur.jeu[choix].nom);
         if(jouerCarte(joueur.jeu[choix] , joueur , plat)){
-            delayPrint("La carte est joué avec success\n",DELAY+10);
+            delayPrint("La carte est joué avec succès\n",DELAY+10);
             delay(1000);
         }else{
             delayPrint("la carte a été defaussé\n",DELAY+10);
+            delay(1000);
         }
         joueur.index_vide = choix;
         joueur.jeu[choix] = null;
@@ -175,7 +176,7 @@ class MilleBorne extends Program {
         // fonction qui demande les infos de chaque joueurs
         for (int i = 0; i < length(plat.liste_joueurs); i++) {
             clearScreen();
-            print("Bonjour joueur "+ (i+1) + " ! Veuillez entrer votre pseudo : ");
+            print("Bonjour joueur "+ (i+1) + " !\n");
             String pseudo = saisiePseudo(plat);
             println("1  2  3  4  5");
             println(toString(VOITURES_DISPO));
@@ -262,8 +263,8 @@ class MilleBorne extends Program {
         */
             print(message);
             String saisie = readString();
-            while (length(saisie) <= 0 || !onlyNumbers(saisie) || stringToInt(saisie) < min || stringToInt(saisie) > max){
-                print("Nombre entré invalide (doit être entre " + min + " et " + max+")");
+            while (length(saisie) <= 0 || length(saisie) > 9 || !onlyNumbers(saisie) || stringToInt(saisie) < min || stringToInt(saisie) > max){
+                print("Nombre entré invalide (doit être entre " + min + " et " + max+")\n >");
                 saisie = readString();
             }
             return stringToInt(saisie);
@@ -533,7 +534,7 @@ class MilleBorne extends Program {
                         avancerDe(joueur , valeurCarte(cartejoué.nom));
                 }else{
                     delayPrint("La réponse donnée est fausse. ",DELAY+15);
-                    delayPrint("La bonne réponse étais \""+ getReponse(question)+ "\"\n",DELAY+15);
+                    delayPrint("La bonne réponse était \""+ getReponse(question)+ "\"\n",DELAY+15);
                     println("Appuyez sur \"Entrée\" pour continuer");
                     readString();
                     return false;
